@@ -9,6 +9,7 @@ function App() {
   const [player2Name, setPlayer2Name] = useState(new Player('Player 2', 'O'));
   const [game, setGame] = useState(new Game(player1Name, player2Name));
   const [grid, setGrid] = useState(game.getBoard());
+  const [message, setMessage] = useState('');
 
   return (
     <>
