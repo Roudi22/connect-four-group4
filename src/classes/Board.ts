@@ -2,6 +2,7 @@ import { PlayerSymbol } from './Player';
 
 export type BoardCell = '' | PlayerSymbol;
 export type BoardGrid = BoardCell[][];
+export type BoardLocation = { x: number; y: number };
 
 export class Board {
   private grid: BoardGrid;
@@ -13,7 +14,7 @@ export class Board {
     this.grid = Array.from({ length: rows }, () => Array(cols).fill(''));
   }
 
-  public makeMove(col: number, symbol: BoardCell): boolean {
+  public makeMove(col: number, symbol: PlayerSymbol): boolean {
     for (let row = this.rows - 1; row >= 0; row--) {
       if (this.grid[row][col] === '') {
         this.grid[row][col] = symbol;
