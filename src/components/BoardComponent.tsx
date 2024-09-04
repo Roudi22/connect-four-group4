@@ -14,16 +14,21 @@ const BoardComponent: React.FC<BoardComponentProps> = ({
   );
 
   useEffect(() => {
+    // Skapa en ny 2D-array (grid) baserat på den nuvarande `grid`-prop
     const newAnimatedCells = grid.map((row, rowIndex) =>
       row.map((cell, colIndex) => {
+        // Kontrollera om en cell har blivit fylld (dvs. den innehåller ett "X" eller "O")
+        // och om den cellen inte redan har markerats för animation (`animatedCells[rowIndex][colIndex]` är null)
         if (cell && !animatedCells[rowIndex][colIndex]) {
-          return cell; // Mark cell to be animated
+          return cell; // Markera cellen för animation genom att returnera den nya symbolen ("X" eller "O")
         }
+        // Om cellen redan har animerats eller är tom, behåll det tidigare tillståndet
         return animatedCells[rowIndex][colIndex];
       })
     );
+    // Uppdatera `animatedCells` med den nya 2D-arrayen som innehåller vilka celler som ska animeras
     setAnimatedCells(newAnimatedCells);
-  }, [grid]);
+  }, [grid]); // Kör denna effekt varje gång `grid` ändras
 
   return (
     <div className="flex flex-col items-center mt-5">
