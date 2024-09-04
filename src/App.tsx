@@ -3,6 +3,7 @@ import { Game } from './classes/Game';
 import { Player } from './classes/Player';
 import Header from './components/Header';
 import BoardComponent from './components/BoardComponent';
+import GameStatus from './components/GameStatus';
 
 function App() {
   const [player1Name, setPlayer1Name] = useState(new Player('Player 1', 'X'));
@@ -26,6 +27,7 @@ function App() {
       <Header
         players={[player1Name || 'Player 1', player2Name || 'Player 2']}
       />
+      <GameStatus message={message} />
       <BoardComponent grid={grid} onCellClick={handleCellClick} />
     </>
   );
