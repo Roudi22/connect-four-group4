@@ -11,12 +11,22 @@ function App() {
   const [grid, setGrid] = useState(game.getBoard());
   const [message, setMessage] = useState('');
 
+  const handleCellClick = (col: number) => {
+    if (game && game.playTurn(col)) {
+      setGrid([...game.getBoard()]);
+      if (game.winner) {
+        setMessage(`${game.winner.name} wins!`);
+      } else {
+        setMessage(`${game.getCurrentPlayer().name}'s turn`);
+      }
+    }
+  };
   return (
     <>
       <Header
         players={[player1Name || 'Player 1', player2Name || 'Player 2']}
       />
-      <BoardComponent grid={grid} onCellClick={() => {}} />
+      <BoardComponent grid={grid} onCellClick={handleCellClick} />
     </>
   );
 }
