@@ -10,13 +10,13 @@ const BoardComponent: React.FC<BoardComponentProps> = ({
   onCellClick,
 }) => {
   return (
-    <div className="board">
+    <div className="flex flex-col items-center mt-5">
       {grid.map((row, rowIndex) => (
-        <div key={rowIndex} className="row">
+        <div key={rowIndex} className="flex">
           {row.map((cell, colIndex) => (
             <div
               key={colIndex}
-              className="cell"
+              className="w-[50px] h-[50px] border border-black flex items-center justify-center cursor-pointer text-[24px] m-1"
               onClick={() => onCellClick(colIndex)}
             >
               <div className="p-4">
