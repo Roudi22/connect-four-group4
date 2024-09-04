@@ -1,5 +1,5 @@
 import { Board } from './Board';
-import { Player } from './Player';
+import { Player, PlayerSymbol } from './Player';
 import { WinChecker } from './WinChecker';
 
 export class Game {
@@ -62,7 +62,7 @@ export class Game {
     }
   }
 
-  private findWinningMove(symbol: string): number | null {
+  private findWinningMove(symbol: PlayerSymbol): number | null {
     for (let col = 0; col < this.board.getGrid()[0].length; col++) {
       if (this.board.makeMove(col, symbol)) {
         if (WinChecker.checkForWin(symbol, this.board.getGrid())) {

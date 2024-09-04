@@ -1,7 +1,10 @@
+import { BoardGrid } from './Board';
+import { PlayerSymbol } from './Player';
+
 export class WinChecker {
   public static checkForWin(
-    symbol: string,
-    board: string[][]
+    symbol: PlayerSymbol,
+    board: BoardGrid
   ): { x: number; y: number }[] | false {
     console.log({ symbol, board });
     return false;

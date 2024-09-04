@@ -1,7 +1,8 @@
 import { useState } from 'react';
 
-import Header from './components/Header';
+import { BoardGrid } from './classes/Board';
 import { WinChecker } from './classes/WinChecker';
+import Header from './components/Header';
 
 const mockBoard = [
   ['', '', '', '', '', ''],
@@ -9,7 +10,7 @@ const mockBoard = [
   ['', '', '', '', '', ''],
   ['', '', '', '', '', ''],
   ['', '', 'X', 'X', 'X', 'X'],
-];
+] as BoardGrid;
 
 function App() {
   const [players, setPlayers] = useState(['Player 1', 'Player 2']);
