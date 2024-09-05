@@ -19,21 +19,21 @@ export class Game {
     if (this.winner) return false;
 
     const currentPlayer = this.players[this.currentPlayerIndex];
-    const moveSuccess = this.board.makeMove(col, currentPlayer.symbol);
+    const lastMove = this.board.makeMove(col, currentPlayer.symbol);
 
-    if (moveSuccess) {
-      if (WinChecker.checkForWin(currentPlayer.symbol, this.board.getGrid())) {
-        this.winner = currentPlayer;
-      } else if (this.board.isFull()) {
-        this.winner = null; // It's a draw
-      } else {
-        this.switchPlayer();
-        if (this.players[this.currentPlayerIndex].isAI) {
-          this.playAITurn();
-        }
+    if (lastMove.x < 0 || lastMove.y < 0) return false;
+
+    if (WinChecker.checkForWin(lastMove, this.board.getGrid())) {
+      this.winner = currentPlayer;
+    } else if (this.board.isFull()) {
+      this.winner = null; // It's a draw
+    } else {
+      this.switchPlayer();
+      if (this.players[this.currentPlayerIndex].isAI) {
+        this.playAITurn();
       }
     }
-    return moveSuccess;
+    return true;
   }
 
   private playAITurn(): void {
@@ -64,13 +64,16 @@ export class Game {
 
   private findWinningMove(symbol: PlayerSymbol): number | null {
     for (let col = 0; col < this.board.getGrid()[0].length; col++) {
-      if (this.board.makeMove(col, symbol)) {
-        if (WinChecker.checkForWin(symbol, this.board.getGrid())) {
-          this.board.undoMove(col); // Undo the move to keep the board state
-          return col;
-        }
+      if (
+        WinChecker.checkForWin(
+          this.board.makeMove(col, symbol),
+          this.board.getGrid()
+        )
+      ) {
         this.board.undoMove(col); // Undo the move to keep the board state
+        return col;
       }
+      this.board.undoMove(col); // Undo the move to keep the board state
     }
     return null;
   }

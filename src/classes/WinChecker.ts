@@ -5,6 +5,9 @@ export class WinChecker {
     lastMove: BoardLocation,
     grid: BoardGrid
   ): BoardLocation[] | false {
+    // NOTE: Just a check for current AI move implementation, not really needed if AI understands if a move is valid or not
+    if (lastMove.x < 0 || lastMove.y < 0) return false;
+
     for (const { forward, reverse } of directions) {
       const matchingCells = [
         { ...lastMove },

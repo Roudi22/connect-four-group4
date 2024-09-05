@@ -14,14 +14,14 @@ export class Board {
     this.grid = Array.from({ length: rows }, () => Array(cols).fill(''));
   }
 
-  public makeMove(col: number, symbol: PlayerSymbol): boolean {
+  public makeMove(col: number, symbol: PlayerSymbol): BoardLocation {
     for (let row = this.rows - 1; row >= 0; row--) {
       if (this.grid[row][col] === '') {
         this.grid[row][col] = symbol;
-        return true;
+        return { x: col, y: row };
       }
     }
-    return false;
+    return { x: -1, y: -1 };
   }
 
   // In Board class
