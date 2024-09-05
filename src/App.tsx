@@ -1,9 +1,24 @@
 import { useState } from 'react';
+
 import { Game } from './classes/Game';
 import { Player } from './classes/Player';
 import Header from './components/Header';
 import BoardComponent from './components/BoardComponent';
 import GameStatus from './components/GameStatus';
+
+const mockBoard = [
+  ['', '', '', '', '', ''],
+  ['X', '', '', '', '', 'X'],
+  ['X', '', '', '', 'X', ''],
+  ['X', '', '', 'X', '', ''],
+  ['X', 'X', 'X', 'X', 'X', 'X'],
+] as BoardGrid;
+
+const mockWins = {
+  up: { x: 0, y: 3 },
+  left: { x: 4, y: 4 },
+  diag: { x: 5, y: 1 },
+};
 
 function App() {
   const [player1Name, setPlayer1Name] = useState(new Player('Player 1', 'X'));
