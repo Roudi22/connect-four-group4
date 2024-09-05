@@ -7,7 +7,7 @@ import './index.css';
 import { ErrorBoundary } from 'react-error-boundary';
 import ErrorComponent from './components/ErrorBoundary.tsx';
 // A test component that throws an error to test the ErrorBoundary
-import ErrorThrowing from './components/ErrorThrowing.tsx';
+// // import ErrorThrowing from './components/ErrorThrowing.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -17,7 +17,7 @@ createRoot(document.getElementById('root')!).render(
       onReset={() => location.reload()}
     >
       {/* Boundary error testing component */}
-      <ErrorThrowing />
+      {/* <ErrorThrowing /> */}
       <App />
     </ErrorBoundary>
   </StrictMode>
