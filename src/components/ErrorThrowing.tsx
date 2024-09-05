@@ -1,10 +1,11 @@
 import { useState } from 'react';
 
-export default function ErrorThrowingComponent() {
+export default function ErrorThrowing() {
+  // State to track if an error should be thrown
   const [throwError, setThrowError] = useState(false);
 
+  // Throw an error when throwError is true
   if (throwError) {
-    // Simulate an error by throwing an exception
     throw new Error('This is a test error!');
   }
 
@@ -12,6 +13,7 @@ export default function ErrorThrowingComponent() {
     <>
       <h3>Error Throwing Component</h3>
       <p>Click the button below to throw an error.</p>
+      {/* Button to trigger the error */}
       <button onClick={() => setThrowError(true)}>Throw Error</button>
     </>
   );

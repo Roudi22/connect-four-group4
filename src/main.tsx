@@ -6,16 +6,18 @@ import './index.css';
 // ErrorBoundary and component
 import { ErrorBoundary } from 'react-error-boundary';
 import ErrorComponent from './components/ErrorBoundary.tsx';
-// ErrorBoundary test
-import ErrorThrowingComponent from './components/ErrorThrowing.tsx';
+// A test component that throws an error to test the ErrorBoundary
+import ErrorThrowing from './components/ErrorThrowing.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
+    {/* Wraps the game inside ErrorBoundary */}
     <ErrorBoundary
       FallbackComponent={ErrorComponent}
       onReset={() => location.reload()}
     >
-      <ErrorThrowingComponent />
+      {/* Boundary error testing component */}
+      <ErrorThrowing />
       <App />
     </ErrorBoundary>
   </StrictMode>
