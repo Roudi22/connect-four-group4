@@ -42,4 +42,14 @@ export class Board {
   public getGrid() {
     return this.grid;
   }
+
+  public getAvailableColumns(): number[] {
+    const availableCols: number[] = [];
+    for (let col = 0; col < this.grid[0].length; col++) {
+      if (this.grid[0][col] === '') {
+        availableCols.push(col);
+      }
+    }
+    return availableCols;
+  }
 }

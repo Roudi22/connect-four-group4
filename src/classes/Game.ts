@@ -1,5 +1,5 @@
-import { Board } from './Board';
-import { Player, PlayerSymbol } from './Player';
+import { Board, BoardGrid } from './Board';
+import { Player } from './Player';
 import { WinChecker } from './WinChecker';
 
 export class Game {
@@ -18,81 +18,33 @@ export class Game {
   public playTurn(col: number): boolean {
     if (this.winner) return false;
 
+    const grid = this.getGrid();
     const currentPlayer = this.players[this.currentPlayerIndex];
     const lastMove = this.board.makeMove(col, currentPlayer.symbol);
 
     if (lastMove.x < 0 || lastMove.y < 0) return false;
 
-    if (WinChecker.checkForWin(lastMove, this.board.getGrid())) {
+    if (WinChecker.checkForWin(lastMove, grid)) {
       this.winner = currentPlayer;
     } else if (this.board.isFull()) {
       this.winner = null; // It's a draw
     } else {
       this.switchPlayer();
       if (this.players[this.currentPlayerIndex].isAI) {
-        this.playAITurn();
+        this.board.makeMove(
+          currentPlayer.playTurn(this.board),
+          currentPlayer.symbol
+        );
       }
     }
     return true;
-  }
-
-  private playAITurn(): void {
-    const aiPlayer = this.players[this.currentPlayerIndex];
-    const opponentPlayer = this.players[1 - this.currentPlayerIndex];
-
-    // 1. Check if AI can win on this move
-    let col = this.findWinningMove(aiPlayer.symbol);
-    if (col !== null) {
-      this.playTurn(col);
-      return;
-    }
-
-    // 2. Check if opponent can win next move, block it
-    col = this.findWinningMove(opponentPlayer.symbol);
-    if (col !== null) {
-      this.playTurn(col);
-      return;
-    }
-
-    // 3. If no immediate win or block, choose a random available column
-    const availableCols = this.getAvailableColumns();
-    if (availableCols.length > 0) {
-      col = availableCols[Math.floor(Math.random() * availableCols.length)];
-      this.playTurn(col);
-    }
-  }
-
-  private findWinningMove(symbol: PlayerSymbol): number | null {
-    for (let col = 0; col < this.board.getGrid()[0].length; col++) {
-      if (
-        WinChecker.checkForWin(
-          this.board.makeMove(col, symbol),
-          this.board.getGrid()
-        )
-      ) {
-        this.board.undoMove(col); // Undo the move to keep the board state
-        return col;
-      }
-      this.board.undoMove(col); // Undo the move to keep the board state
-    }
-    return null;
-  }
-
-  private getAvailableColumns(): number[] {
-    const availableCols: number[] = [];
-    for (let col = 0; col < this.board.getGrid()[0].length; col++) {
-      if (this.board.getGrid()[0][col] === '') {
-        availableCols.push(col);
-      }
-    }
-    return availableCols;
   }
 
   private switchPlayer(): void {
     this.currentPlayerIndex = 1 - this.currentPlayerIndex;
   }
 
-  public getBoard(): string[][] {
+  public getGrid(): BoardGrid {
     return this.board.getGrid();
   }
 
