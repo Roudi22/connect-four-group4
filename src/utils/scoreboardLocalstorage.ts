@@ -1,4 +1,3 @@
-// utils/scoreboard.ts
 export const saveScoreToLocalStorage = (winnerName: string, moves: number) => {
   // Get the current scoreboard from localStorage
   let scoreboard = JSON.parse(
