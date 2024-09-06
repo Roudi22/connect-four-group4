@@ -5,6 +5,7 @@ import { Player } from './classes/Player';
 import Header from './components/Header';
 import BoardComponent from './components/BoardComponent';
 import GameStatus from './components/GameStatus';
+import Scoreboard from './components/Scoreboard';
 
 function App() {
   const [player1Name, setPlayer1Name] = useState(new Player('Player 1', 'X'));
@@ -30,6 +31,8 @@ function App() {
       />
       <GameStatus message={message} />
       <BoardComponent grid={grid} onCellClick={handleCellClick} />
+
+      <Scoreboard/>
     </>
   );
 }
