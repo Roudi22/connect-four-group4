@@ -1,55 +1,74 @@
-import { Board } from "./Board";
+import { BoardGrid, BoardLocation } from './Board';
 
 export class WinChecker {
-    constructor(private board: Board){}
+  public static checkForWin(
+    lastMove: BoardLocation,
+    grid: BoardGrid
+  ): BoardLocation[] | false {
+    // NOTE: Just a check for current AI move implementation, not really needed if AI understands if a move is valid or not
+    if (lastMove.x < 0 || lastMove.y < 0) return false;
 
-    public checkForWin(symbol: string): boolean {
-        const grid = this.board.getGrid();
-        
-        return this.checkHorizontal(grid, symbol) || this.checkVertical(grid, symbol) || this.checkDiagonal(grid, symbol);
+    for (const { forward, reverse } of directions) {
+      const matchingCells = [
+        { ...lastMove },
+        ...this.travelGrid(grid, lastMove, forward),
+        ...this.travelGrid(grid, lastMove, reverse),
+      ];
+
+      // NOTE: can find longer connects than four but not 7 shaped double wins
+      if (matchingCells.length >= 4) return matchingCells;
     }
 
-    private checkHorizontal(grid: string[][], symbol: string): boolean {
-        for (const row of grid) {
-            for (let col = 0; col <= grid[0].length - 4; col++) {
-                if (row.slice(col, col + 4).every(cell => cell === symbol)) {
-                    return true;
-                }
-            }
-        }
-        return false;
+    return false;
+  }
+
+  private static travelGrid(
+    grid: BoardGrid,
+    start: BoardLocation,
+    direction: BoardLocation
+  ) {
+    const symbol = grid[start.y][start.x];
+    const matchingCells = [];
+    let currentX = start.x + direction.x;
+    let currentY = start.y + direction.y;
+
+    while (true) {
+      const outOfBounds =
+        currentX < 0 ||
+        currentY < 0 ||
+        currentX >= grid[0].length ||
+        currentY >= grid.length;
+
+      if (outOfBounds || grid[currentY][currentX] !== symbol) break;
+
+      matchingCells.push({ x: currentX, y: currentY });
+      currentX += direction.x;
+      currentY += direction.y;
     }
 
-    private checkVertical(grid: string[][], symbol: string): boolean {
-        for (let col = 0; col < grid[0].length; col++) {
-            for (let row = 0; row <= grid.length - 4; row++) {
-                if ([0, 1, 2, 3].every(i => grid[row + i][col] === symbol)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private checkDiagonal(grid: string[][], symbol: string): boolean {
-        // Diagonal nedåt höger
-        for (let row = 0; row <= grid.length - 4; row++) {
-            for (let col = 0; col <= grid[0].length - 4; col++) {
-                if ([0, 1, 2, 3].every(i => grid[row + i][col + i] === symbol)) {
-                    return true;
-                }
-            }
-        }
-
-        // Diagonal uppåt höger
-        for (let row = 3; row < grid.length; row++) {
-            for (let col = 0; col <= grid[0].length - 4; col++) {
-                if ([0, 1, 2, 3].every(i => grid[row - i][col + i] === symbol)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
+    return matchingCells;
+  }
 }
+
+const directions = [
+  {
+    label: 'upDown',
+    forward: { x: 0, y: -1 },
+    reverse: { x: 0, y: 1 },
+  },
+  {
+    label: 'nwSe',
+    forward: { x: -1, y: -1 },
+    reverse: { x: 1, y: 1 },
+  },
+  {
+    label: 'leftRight',
+    forward: { x: -1, y: 0 },
+    reverse: { x: 1, y: 0 },
+  },
+  {
+    label: 'neSw',
+    forward: { x: 1, y: -1 },
+    reverse: { x: -1, y: 1 },
+  },
+];

@@ -1,4 +1,9 @@
-import { Player } from "./Player";
+import { Player } from './Player';
+
 export class Move {
-  constructor(public player: Player, public column: number) {}
+  constructor(
+    public player: Player,
+    public column: number
+  ) {}
 }
+

@@ -1,11 +1,13 @@
-export class Player {
-    public name: string;
-    public symbol: string;
-    public isAI: boolean;
+export type PlayerSymbol = 'X' | 'O';
 
-    constructor(name: string, symbol: string, isAI: boolean = false) {
-        this.name = name;
-        this.symbol = symbol;
-        this.isAI = isAI;
-    }
+export class Player {
+  public name: string;
+  public symbol: PlayerSymbol;
+  public isAI: boolean;
+
+  constructor(name: string, symbol: PlayerSymbol, isAI: boolean = false) {
+    this.name = name;
+    this.symbol = symbol;
+    this.isAI = isAI;
+  }
 }
