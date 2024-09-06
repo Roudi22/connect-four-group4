@@ -37,7 +37,6 @@ export class Game {
         currentPlayer.name,
         this.movesCount[currentPlayer.symbol]
       );
-      
     } else if (this.board.isFull()) {
       this.winner = null; // It's a draw
     } else {
