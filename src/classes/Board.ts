@@ -24,8 +24,6 @@ export class Board {
     return { x: -1, y: -1 };
   }
 
-  // In Board class
-
   public undoMove(col: number): void {
     for (let row = 0; row < this.grid.length; row++) {
       if (this.grid[row][col] !== '') {
