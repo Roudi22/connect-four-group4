@@ -3,7 +3,6 @@ import { useState } from 'react';
 type GameModeProps = {
   onSubmit: (player1Name: string, player2Name: string, isAI: boolean) => void;
 };
-
 const GameModePopup = ({ onSubmit }: GameModeProps) => {
   const [selectedMode, setSelectedMode] = useState<string>('');
   const [player1Name, setPlayer1Name] = useState<string>('');
@@ -19,12 +18,14 @@ const GameModePopup = ({ onSubmit }: GameModeProps) => {
       return;
     }
     const isAI = selectedMode === 'Human vs Computer';
-    // const isAI = selectedMode;
     onSubmit(player1Name, isAI ? 'Computer' : player2Name, isAI);
     // Reset form
     setSelectedMode('');
     setPlayer1Name('');
     setPlayer2Name('');
+  }
+  function EndGame() {
+    console.log('Gamed Ended');
   }
 
   return (
@@ -32,7 +33,7 @@ const GameModePopup = ({ onSubmit }: GameModeProps) => {
       <div className="bg-white p-4 rounded-lg">
         <form onSubmit={handleSubmit} className="flex-wrap ">
           <h1>Choose Game Mode</h1>
-          <div className="p2">
+          <div className="rounded-s-md p-1">
             <input
               type="radio"
               id="humanVsHuman"
@@ -43,7 +44,7 @@ const GameModePopup = ({ onSubmit }: GameModeProps) => {
             />
             <label htmlFor="humanVsHuman">Human vs Human</label>
           </div>
-          <div className="">
+          <div className="rounded-s-md p-1">
             <input
               type="radio"
               id="humanVsComputer"
@@ -54,13 +55,11 @@ const GameModePopup = ({ onSubmit }: GameModeProps) => {
             />
             <label htmlFor="humanVsComputer">Human vs Computer</label>
           </div>
-
-          {/* Conditionally render name inputs */}
           {selectedMode === 'Human vs Human' && (
             <div className="rounded-s-md p-8">
               <input
                 type="text"
-                placeholder="Player 1 Name"
+                placeholder="Enter Player 1 Name"
                 value={player1Name}
                 onChange={(e) => setPlayer1Name(e.target.value)}
               />
@@ -72,12 +71,19 @@ const GameModePopup = ({ onSubmit }: GameModeProps) => {
               />
             </div>
           )}
-          <div className="flex">
+          <div className="flex space-x-4">
             <button
               type="submit"
               className="w-16 rounded-md grow bg-slate-900 text-white hover:bg-slate-400"
             >
               Select
+            </button>
+            <button
+              type="button"
+              className="w-16 rounded-md grow bg-slate-900 text-white hover:bg-slate-400"
+              onClick={EndGame}
+            >
+              Close
             </button>
           </div>
         </form>

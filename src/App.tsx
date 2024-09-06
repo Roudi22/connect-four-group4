@@ -25,7 +25,7 @@ function App() {
     }
   };
 
-  function handleHumanNamesSubmit(
+  function handleGameModeSubmit(
     player1Name: string,
     player2Name: string,
     isAI: boolean
@@ -46,7 +46,7 @@ function App() {
   return (
     <>
       <Header players={[player1Name, player2Name]} />
-      {showPopup && <GameModePopup onSubmit={handleHumanNamesSubmit} />}
+      {showPopup && <GameModePopup onSubmit={handleGameModeSubmit} />}
       <GameStatus message={message} />
       <BoardComponent grid={grid} onCellClick={handleCellClick} />
     </>
