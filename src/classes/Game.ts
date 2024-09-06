@@ -1,18 +1,21 @@
 import { Board } from './Board';
 import { Player, PlayerSymbol } from './Player';
 import { WinChecker } from './WinChecker';
+import { saveScoreToLocalStorage } from '../utils/scoreboardLocalstorage';
 
 export class Game {
   private board: Board;
   private players: Player[];
   private currentPlayerIndex: number;
   public winner: Player | null;
+  private movesCount: { [key: string]: number }; // Tracks moves for each player
 
   constructor(player1: Player, player2: Player) {
     this.board = new Board();
     this.players = [player1, player2];
     this.currentPlayerIndex = 0;
     this.winner = null;
+    this.movesCount = { X: 0, O: 0 }; // Initialize move counts
   }
 
   public playTurn(col: number): boolean {
@@ -23,8 +26,18 @@ export class Game {
 
     if (lastMove.x < 0 || lastMove.y < 0) return false;
 
+    // Increment move count for the current player
+    this.movesCount[currentPlayer.symbol]++;
+
     if (WinChecker.checkForWin(lastMove, this.board.getGrid())) {
       this.winner = currentPlayer;
+
+      // Save the score to localStorage when the game ends
+      saveScoreToLocalStorage(
+        currentPlayer.name,
+        this.movesCount[currentPlayer.symbol]
+      );
+      
     } else if (this.board.isFull()) {
       this.winner = null; // It's a draw
     } else {
