@@ -5,6 +5,7 @@ import { AIPlayer, HumanPlayer } from './classes/Player';
 import BoardComponent from './components/BoardComponent';
 import GameStatus from './components/GameStatus';
 import Header from './components/Header';
+import Scoreboard from './components/Scoreboard';
 
 // const playerX = new HumanPlayer('Player 1', 'X');
 const playerX = new AIPlayer(1, 'X');
@@ -40,6 +41,8 @@ function App() {
       <Header players={[playerX || 'Player 1', playerO || 'Player 2']} />
       <GameStatus message={message} />
       <BoardComponent grid={grid} onCellClick={handleCellClick} />
+
+      <Scoreboard />
     </>
   );
 }
