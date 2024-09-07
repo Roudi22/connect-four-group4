@@ -55,7 +55,7 @@ function App() {
 
   const handleCellClick = (col: number) => {
     const currentPlayer = game.getCurrentPlayer();
-    if (currentPlayer instanceof AIPlayer) return;
+    if (game.winner || currentPlayer instanceof AIPlayer) return;
 
     const board = game.getBoard();
     const validMove = currentPlayer.playTurn(board, col);

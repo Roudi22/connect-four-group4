@@ -71,7 +71,9 @@ export class AIPlayer extends PlayerBaseClass {
     const grid = board.getGrid();
 
     for (let col = 0; col < grid[0].length; col++) {
-      if (WinChecker.checkForWin(board.makeMove(col, symbol), grid)) {
+      const move = board.makeMove(col, symbol);
+      if (move.x < 0 || move.y < 0) continue;
+      if (WinChecker.checkForWin(move, grid)) {
         board.undoMove(col); // Undo the move to keep the board state
         return col;
       }
