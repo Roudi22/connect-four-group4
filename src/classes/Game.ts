@@ -1,7 +1,7 @@
+import { saveScoreToLocalStorage } from '../utils/scoreboardLocalstorage';
 import { Board, BoardGrid } from './Board';
 import { Player } from './Player';
 import { WinChecker } from './WinChecker';
-import { saveScoreToLocalStorage } from '../utils/scoreboardLocalstorage';
 
 export class Game {
   private board: Board;
@@ -18,26 +18,25 @@ export class Game {
     this.movesCount = { X: 0, O: 0 }; // Initialize move counts
   }
 
-  public play() {
-    const currentPlayer = this.getCurrentPlayer();
-    if (currentPlayer.isAI) {
-      const col = currentPlayer.playTurn(this.board);
-      this.board.makeMove(col, currentPlayer.symbol);
-      this.switchPlayer();
-    }
+  public moveToNextTurn() {
+    const prevPlayer = this.getCurrentPlayer();
+
+    // Increment move count for the current player
+    // NOTE: could be moved to player class?
+    this.movesCount[prevPlayer.symbol]++;
+
+    this.updateWinner();
+    if (this.winner) return true;
+    if (this.board.isFull()) return true;
+
+    this.switchPlayer();
+    return false;
   }
 
-  public playTurn(col: number): boolean {
-    if (this.winner) return false;
-
+  private updateWinner() {
     const grid = this.getGrid();
     const currentPlayer = this.getCurrentPlayer();
-    const lastMove = this.board.makeMove(col, currentPlayer.symbol);
-    console.log({ currentPlayer, index: this.currentPlayerIndex });
-
-    if (lastMove.x < 0 || lastMove.y < 0) return false;
-    // Increment move count for the current player
-    this.movesCount[currentPlayer.symbol]++;
+    const lastMove = this.board.lastMove;
 
     if (WinChecker.checkForWin(lastMove, grid)) {
       this.winner = currentPlayer;
@@ -49,14 +48,6 @@ export class Game {
       );
     } else if (this.board.isFull()) {
       this.winner = null; // It's a draw
-    } else {
-      this.switchPlayer();
-      if (currentPlayer.isAI) {
-        this.board.makeMove(
-          currentPlayer.playTurn(this.board),
-          currentPlayer.symbol
-        );
-      }
     }
     return true;
   }
@@ -65,11 +56,15 @@ export class Game {
     this.currentPlayerIndex = 1 - this.currentPlayerIndex;
   }
 
+  public getBoard(): Board {
+    return this.board;
+  }
+
   public getGrid(): BoardGrid {
     return this.board.getGrid();
   }
 
-  public getCurrentPlayer(): Player {
+  public getCurrentPlayer() {
     return this.players[this.currentPlayerIndex];
   }
 }

@@ -7,37 +7,37 @@ export type Player = HumanPlayer | AIPlayer;
 abstract class PlayerBaseClass {
   public name: string;
   public symbol: PlayerSymbol;
-  public isAI: boolean;
 
-  constructor(name: string, symbol: PlayerSymbol, isAI: boolean) {
+  constructor(name: string, symbol: PlayerSymbol) {
     this.name = name;
     this.symbol = symbol;
-    this.isAI = isAI;
   }
-
-  public abstract playTurn(board: Board): number;
 }
 
 export class HumanPlayer extends PlayerBaseClass {
+  public isAI = false;
+
   constructor(name: string, symbol: PlayerSymbol) {
-    super(name, symbol, false);
+    super(name, symbol);
   }
 
-  public playTurn(board: Board): number {
-    console.log(board);
-    return 1;
+  public playTurn(board: Board, col: number) {
+    const lastMove = board.makeMove(col, this.symbol);
+    return lastMove.x >= 0 && lastMove.y >= 0;
   }
 }
 
 export class AIPlayer extends PlayerBaseClass {
-  difficulty;
+  public isAI = true;
+  public difficulty;
 
   constructor(difficulty: number, symbol: PlayerSymbol) {
-    super(`Difficulty ${difficulty} AI`, symbol, true);
+    super(`Difficulty ${difficulty} AI`, symbol);
     this.difficulty = difficulty;
   }
 
   public playTurn(board: Board): number {
+    // TODO: check difficulty and use the correct AI
     return this.playAITurn(board);
   }
 

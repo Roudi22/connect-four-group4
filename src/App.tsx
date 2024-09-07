@@ -10,32 +10,56 @@ import Scoreboard from './components/Scoreboard';
 // const playerX = new HumanPlayer('Player 1', 'X');
 const playerX = new AIPlayer(1, 'X');
 const playerO = new HumanPlayer('Player 2', 'O');
+// const playerO = new AIPlayer(1, 'O');
 const game = new Game(playerX, playerO);
 
 function App() {
   const [grid, setGrid] = useState(game.getGrid());
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState(
+    `${game.getCurrentPlayer().name}'s turn`
+  );
 
+  const updateUi = () => {
+    setMessage(
+      game.winner
+        ? `${game.winner.name} wins!`
+        : `${game.getCurrentPlayer().name}'s turn`
+    );
+    setGrid([...game.getGrid()]);
+  };
+
+  // FIX: player two always starts
+  const nextTurn = () => {
+    const gameOver = game.moveToNextTurn();
+    updateUi();
+
+    const currentPlayer = game.getCurrentPlayer();
+    if (gameOver || currentPlayer instanceof HumanPlayer) return;
+
+    const board = game.getBoard();
+    board.makeMove(currentPlayer.playTurn(board), currentPlayer.symbol);
+    nextTurn();
+  };
+
+  // NOTE: Hack until we get a real start button
   useEffect(() => {
     const timeout = setTimeout(() => {
-      setMessage(`${game.getCurrentPlayer().name}'s turn`);
-      game.play();
-      setMessage(`${game.getCurrentPlayer().name}'s turn`);
-      setGrid([...game.getGrid()]);
+      nextTurn();
     }, 10);
     return () => clearTimeout(timeout);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleCellClick = (col: number) => {
-    if (game.playTurn(col)) {
-      setGrid([...game.getGrid()]);
-      if (game.winner) {
-        setMessage(`${game.winner.name} wins!`);
-      } else {
-        setMessage(`${game.getCurrentPlayer().name}'s turn`);
-      }
-    }
+    const currentPlayer = game.getCurrentPlayer();
+    if (currentPlayer instanceof AIPlayer) return;
+
+    const board = game.getBoard();
+    const validMove = currentPlayer.playTurn(board, col);
+    if (!validMove) return;
+    nextTurn();
   };
+
   return (
     <>
       <Header players={[playerX || 'Player 1', playerO || 'Player 2']} />
