@@ -4,6 +4,8 @@ import { WinChecker } from './WinChecker';
 export type PlayerSymbol = 'X' | 'O';
 export type Player = HumanPlayer | AIPlayer;
 
+// abstract class cannot be instanciated,
+// but saves typing shared variables for human and ai classes
 abstract class PlayerBaseClass {
   public name: string;
   public symbol: PlayerSymbol;
@@ -15,8 +17,6 @@ abstract class PlayerBaseClass {
 }
 
 export class HumanPlayer extends PlayerBaseClass {
-  public isAI = false;
-
   constructor(name: string, symbol: PlayerSymbol) {
     super(name, symbol);
   }
@@ -28,7 +28,6 @@ export class HumanPlayer extends PlayerBaseClass {
 }
 
 export class AIPlayer extends PlayerBaseClass {
-  public isAI = true;
   public difficulty;
 
   constructor(difficulty: number, symbol: PlayerSymbol) {
@@ -38,10 +37,10 @@ export class AIPlayer extends PlayerBaseClass {
 
   public playTurn(board: Board): number {
     // TODO: check difficulty and use the correct AI
-    return this.playAITurn(board);
+    return this.easyAI(board);
   }
 
-  private playAITurn(board: Board): number {
+  private easyAI(board: Board): number {
     const mySymbol = this.symbol;
     const opponentSymbol = mySymbol === 'X' ? 'O' : 'X';
 

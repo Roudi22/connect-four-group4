@@ -7,10 +7,13 @@ import GameStatus from './components/GameStatus';
 import Header from './components/Header';
 import Scoreboard from './components/Scoreboard';
 
+// NOTE: Mock players until we have a working popup
 // const playerX = new HumanPlayer('Player 1', 'X');
 const playerX = new AIPlayer(1, 'X');
 const playerO = new HumanPlayer('Player 2', 'O');
 // const playerO = new AIPlayer(1, 'O');
+
+// NOTE: Needs a reset game function or non const variable so we can make a new instance on a new game
 const game = new Game(playerX, playerO);
 
 function App() {

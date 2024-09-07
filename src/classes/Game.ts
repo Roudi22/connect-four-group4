@@ -1,5 +1,5 @@
 import { saveScoreToLocalStorage } from '../utils/scoreboardLocalstorage';
-import { Board, BoardGrid } from './Board';
+import { Board, BoardGrid, BoardLocation } from './Board';
 import { Player } from './Player';
 import { WinChecker } from './WinChecker';
 
@@ -8,6 +8,7 @@ export class Game {
   private players: Player[];
   private currentPlayerIndex: number;
   public winner: Player | null;
+  public winningConnection: BoardLocation[] | null;
   private movesCount: { [key: string]: number }; // Tracks moves for each player
 
   constructor(player1: Player, player2: Player) {
@@ -15,9 +16,12 @@ export class Game {
     this.players = [player1, player2];
     this.currentPlayerIndex = 0;
     this.winner = null;
+    this.winningConnection = null;
+
     this.movesCount = { X: 0, O: 0 }; // Initialize move counts
   }
 
+  /** @returns is the game over (win or draw) */
   public moveToNextTurn() {
     const prevPlayer = this.getCurrentPlayer();
 
@@ -27,7 +31,7 @@ export class Game {
 
     this.updateWinner();
     if (this.winner) return true;
-    if (this.board.isFull()) return true;
+    if (this.board.isFull()) return true; // It's a draw
 
     this.switchPlayer();
     return false;
@@ -38,18 +42,17 @@ export class Game {
     const currentPlayer = this.getCurrentPlayer();
     const lastMove = this.board.lastMove;
 
-    if (WinChecker.checkForWin(lastMove, grid)) {
+    const winningConnection = WinChecker.checkForWin(lastMove, grid);
+    if (winningConnection) {
       this.winner = currentPlayer;
+      this.winningConnection = winningConnection;
 
       // Save the score to localStorage when the game ends
       saveScoreToLocalStorage(
         currentPlayer.name,
         this.movesCount[currentPlayer.symbol]
       );
-    } else if (this.board.isFull()) {
-      this.winner = null; // It's a draw
     }
-    return true;
   }
 
   private switchPlayer(): void {
