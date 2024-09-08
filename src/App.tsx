@@ -29,9 +29,9 @@ function App() {
   };
 
   function handleGameModeSubmit(
-    player1Name: string,
-    player2Name: string,
-    isAI: boolean
+    player1Name: string | undefined,
+    player2Name: string | undefined,
+    isAI: boolean | undefined
   ) {
     const player1 = new Player(player1Name || 'Player 1', 'X');
     const player2 = new Player(
