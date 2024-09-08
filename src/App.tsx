@@ -6,12 +6,13 @@ import BoardComponent from './components/BoardComponent';
 import GameStatus from './components/GameStatus';
 import Header from './components/Header';
 import Scoreboard from './components/Scoreboard';
+import { wait } from './utils/time';
 
 // NOTE: Mock players until we have a working popup
 // const playerX = new HumanPlayer('Player 1', 'X');
 const playerX = new AIPlayer(1, 'X');
-const playerO = new HumanPlayer('Player 2', 'O');
-// const playerO = new AIPlayer(1, 'O');
+// const playerO = new HumanPlayer('Player 2', 'O');
+const playerO = new AIPlayer(1, 'O');
 
 // NOTE: Needs a reset game function or non const variable so we can make a new instance on a new game
 const game = new Game(playerX, playerO);
@@ -38,16 +39,16 @@ function App() {
 
     const currentPlayer = game.getCurrentPlayer();
     if (gameOver || currentPlayer instanceof HumanPlayer) return;
+    playAITurn(currentPlayer);
+  };
 
-    setTimeout(() => {
-      setMessage(`${currentPlayer.name} is thinking...`);
-    }, 2000);
-
-    setTimeout(() => {
-      const board = game.getBoard();
-      board.makeMove(currentPlayer.playTurn(board), currentPlayer.symbol);
-      nextTurn();
-    }, 4000);
+  const playAITurn = async (player: AIPlayer) => {
+    await wait(1500);
+    setMessage(`${player.name} is thinking...`);
+    await wait(1500);
+    const board = game.getBoard();
+    board.makeMove(player.playTurn(board), player.symbol);
+    nextTurn();
   };
 
   // NOTE: Hack until we get a real start button
