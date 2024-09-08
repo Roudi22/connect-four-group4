@@ -39,9 +39,15 @@ function App() {
     const currentPlayer = game.getCurrentPlayer();
     if (gameOver || currentPlayer instanceof HumanPlayer) return;
 
-    const board = game.getBoard();
-    board.makeMove(currentPlayer.playTurn(board), currentPlayer.symbol);
-    nextTurn();
+    setTimeout(() => {
+      setMessage(`${currentPlayer.name} is thinking...`);
+    }, 2000);
+
+    setTimeout(() => {
+      const board = game.getBoard();
+      board.makeMove(currentPlayer.playTurn(board), currentPlayer.symbol);
+      nextTurn();
+    }, 4000);
   };
 
   // NOTE: Hack until we get a real start button
