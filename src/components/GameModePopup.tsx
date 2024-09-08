@@ -10,6 +10,7 @@ type GameModeProps = {
 
 const GameModePopup = ({ onSubmit }: GameModeProps) => {
   const [selectedMode, setSelectedMode] = useState<string>('');
+  const [difficulty, setDifficulty] = useState<string>('Easy');
   const [player1Name, setPlayer1Name] = useState<string>('');
   const [player2Name, setPlayer2Name] = useState<string>('');
 
@@ -134,7 +135,52 @@ const GameModePopup = ({ onSubmit }: GameModeProps) => {
             }`}
           >
             {selectedMode === 'Human vs AI' && (
-              <div className="rounded-s-md p-8 flex justify-center">
+              <div className="rounded-s-md p-8 flex flex-col items-center justify-center">
+                <div className="flex gap-2 mb-2">
+                  <div className="rounded-s-md p-1">
+                    <input
+                      type="radio"
+                      id="easy"
+                      name="gameDifficulty"
+                      value="Easy"
+                      checked={difficulty === 'Easy'}
+                      onChange={(e) => setDifficulty(e.target.value)}
+                      className="hidden"
+                    />
+                    <label
+                      htmlFor="easy"
+                      className={`cursor-pointer px-6 py-2 border rounded-md ${
+                        difficulty === 'Easy'
+                          ? 'bg-blue-500 text-white'
+                          : 'bg-gray-200'
+                      }`}
+                    >
+                      Easy
+                    </label>
+                  </div>
+
+                  <div className="rounded-s-md p-1">
+                    <input
+                      type="radio"
+                      id="hard"
+                      name="gameDifficulty"
+                      value="Hard"
+                      checked={difficulty === 'Hard'}
+                      onChange={(e) => setDifficulty(e.target.value)}
+                      className="hidden"
+                    />
+                    <label
+                      htmlFor="hard"
+                      className={`cursor-pointer px-6 py-2 border rounded-md ${
+                        difficulty === 'Hard'
+                          ? 'bg-blue-500 text-white'
+                          : 'bg-gray-200'
+                      }`}
+                    >
+                      Hard
+                    </label>
+                  </div>
+                </div>
                 <input
                   type="text"
                   className="border p-2 rounded-md outline-none"
