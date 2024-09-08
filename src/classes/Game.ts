@@ -43,6 +43,7 @@ export class Game {
       this.switchPlayer();
       if (this.players[this.currentPlayerIndex].isAI) {
         this.playAITurn();
+        //this.dumbAI();
       }
     }
     return true;
@@ -71,6 +72,15 @@ export class Game {
     if (availableCols.length > 0) {
       col = availableCols[Math.floor(Math.random() * availableCols.length)];
       this.playTurn(col);
+    }
+  }
+
+  private dumbAI(): void {
+    const availableCols = this.getAvailableColumns();
+    if (availableCols.length > 0) {
+      const randomCol =
+        availableCols[Math.floor(Math.random() * availableCols.length)];
+      this.playTurn(randomCol);
     }
   }
 
