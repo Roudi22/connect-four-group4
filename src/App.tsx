@@ -9,27 +9,20 @@ import Scoreboard from './components/Scoreboard';
 import Modal from './components/ui/Modal';
 import { wait } from './utils/time';
 
-// NOTE: Mock players until we have a working popup
-// const playerX = new HumanPlayer('Player 1', 'X');
-const playerX = new AIPlayer(1, 'X');
-// const playerO = new HumanPlayer('Player 2', 'O');
-const playerO = new AIPlayer(2, 'O');
-
-// NOTE: Needs a reset game function or non const variable so we can make a new instance on a new game
-let game = new Game(playerX, playerO);
-
 function App() {
-
-  const [player1Name, setPlayer1Name] = useState(new Player('Player 1', 'X'));
-  const [player2Name, setPlayer2Name] = useState(new Player('Player 2', 'O'));
-  const [game, setGame] = useState(new Game(player1Name, player2Name));
+  const [player1Name, setPlayer1Name] = useState<string>('');
+  const [player2Name, setPlayer2Name] = useState<string>('');
+  const [game, setGame] = useState(
+    new Game(
+      new HumanPlayer(player1Name, 'X'),
+      new HumanPlayer(player2Name, 'O')
+    )
+  );
   const [showPopup, setShowPopup] = useState(true);
-
   const [grid, setGrid] = useState(game.getGrid());
   const [message, setMessage] = useState(
     `${game.getCurrentPlayer().name}'s turn`
   );
-  const [isPlayer1Turn, setIsPlayer1Turn] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
   const updateUi = () => {
@@ -38,11 +31,11 @@ function App() {
         ? `${game.winner.name} wins!`
         : `${game.getCurrentPlayer().name}'s turn`
     );
+    console.log('current player', game.getCurrentPlayer());
     setGrid([...game.getGrid()]);
     if (game.winner) setShowModal(true);
   };
 
-  // FIX: player two always starts
   const nextTurn = () => {
     const gameOver = game.moveToNextTurn();
     updateUi();
@@ -61,7 +54,6 @@ function App() {
     nextTurn();
   };
 
-  // NOTE: Hack until we get a real start button
   useEffect(() => {
     const timeout = setTimeout(() => {
       nextTurn();
@@ -79,43 +71,54 @@ function App() {
     if (!validMove) return;
     nextTurn();
   };
-const resetGame = () => {
-    setIsPlayer1Turn(!isPlayer1Turn);
 
-    const startingPlayer = isPlayer1Turn ? playerO : playerX;
-    const secondPlayer = isPlayer1Turn ? playerX : playerO;
-
-    game = new Game(startingPlayer, secondPlayer);
-    updateUi();
+  const resetGame = () => {
     setShowModal(false);
-    nextTurn();
+    setTimeout(() => {
+      setShowPopup(true);
+      setPlayer1Name('');
+      setPlayer2Name('');
+      const newGame = new Game(
+        new HumanPlayer(player1Name, 'X'),
+        new HumanPlayer(player2Name, 'O')
+      );
+      setGame(newGame);
+      setGrid(newGame.getGrid());
+      setMessage('');
+    }, 0);
   };
 
   function handleGameModeSubmit(
-    player1Name: string | undefined,
-    player2Name: string | undefined,
-    isAI: boolean | undefined
+    player1Name: HumanPlayer | AIPlayer | undefined,
+    player2Name: HumanPlayer | AIPlayer | undefined
   ) {
-    const player1 = new Player(player1Name || 'Player 1', 'X');
-    const player2 = new Player(
-      player2Name || (isAI ? 'Computer' : 'Player 2'),
-      'O'
-    );
-    setPlayer1Name(player1);
-    setPlayer2Name(player2);
-    setGame(new Game(player1, player2));
-    setGrid(game.getBoard());
-    setMessage(`${player1.name}'s playTurn`);
     setShowPopup(false);
+    if (!player1Name || !player2Name) return;
+    if (player1Name instanceof AIPlayer && player2Name instanceof AIPlayer) {
+      console.log('player1', player1Name);
+      setPlayer1Name(`Difficulty ${player1Name.difficulty} AI `);
+      setPlayer2Name(`Difficulty ${player2Name.difficulty} AI`);
+
+      updateUi();
+      nextTurn();
+      const newGame = new Game(player1Name, player2Name);
+      setGame(newGame);
+      setGrid(newGame.getGrid());
+    } else {
+      setPlayer1Name(player1Name.name);
+      setPlayer2Name(player2Name.name);
+      console.log('player1', player1Name);
+      updateUi();
+      const newGame = new Game(player1Name, player2Name);
+      setGame(newGame);
+      setGrid(newGame.getGrid());
+    }
   }
 
   return (
     <>
       <Header players={[player1Name, player2Name]} />
       {showPopup && <GameModePopup onSubmit={handleGameModeSubmit} />}
-
-  
-
       <GameStatus message={message} />
       <BoardComponent grid={grid} onCellClick={handleCellClick} />
       <Scoreboard />
