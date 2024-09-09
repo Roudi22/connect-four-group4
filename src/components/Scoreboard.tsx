@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { getScoreboardFromLocalStorage } from '../utils/scoreboardLocalstorage';
+import { ScoreboardLocalStorage } from '../classes/scoreboardLocalstorage';
 
-const Scoreboard: React.FC = () => {
+interface ScoreboardProps {
+  scoreUpdated: boolean; // Prop to trigger updates
+}
+
+const Scoreboard: React.FC<ScoreboardProps> = ({ scoreUpdated }) => {
   // State to hold the list of scores
   const [scores, setScores] = useState<{ winnerName: string; moves: number }[]>(
     []
@@ -9,9 +13,9 @@ const Scoreboard: React.FC = () => {
 
   // Effect hook to fetch scores from local storage
   useEffect(() => {
-    const fetchedScores = getScoreboardFromLocalStorage();
+    const fetchedScores = ScoreboardLocalStorage.getScoreboard();
     setScores(fetchedScores);
-  }, []);
+  }, [scoreUpdated]);
 
   // If there are no scores, display a message
   if (scores.length === 0) {

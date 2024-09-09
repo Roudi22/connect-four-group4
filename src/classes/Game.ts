@@ -1,7 +1,7 @@
 import { Board } from './Board';
 import { Player, PlayerSymbol } from './Player';
 import { WinChecker } from './WinChecker';
-import { saveScoreToLocalStorage } from '../utils/scoreboardLocalstorage';
+import { ScoreboardLocalStorage } from './scoreboardLocalstorage';
 
 export class Game {
   private board: Board;
@@ -33,7 +33,7 @@ export class Game {
       this.winner = currentPlayer;
 
       // Save the score to localStorage when the game ends
-      saveScoreToLocalStorage(
+      ScoreboardLocalStorage.saveScore(
         currentPlayer.name,
         this.movesCount[currentPlayer.symbol]
       );

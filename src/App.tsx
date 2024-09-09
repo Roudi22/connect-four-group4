@@ -20,8 +20,8 @@ function App() {
   );
 
   const [isPlayer1Turn, setIsPlayer1Turn] = useState(false);
-
   const [showModal, setShowModal] = useState(false);
+  const [scoreUpdated, setScoreUpdated] = useState(false); // State to track score updates
 
   const handleCellClick = (col: number) => {
     if (game && game.playTurn(col)) {
@@ -29,6 +29,7 @@ function App() {
       if (game.winner) {
         setMessage(`${game.winner.name} wins!`);
         setShowModal(true);
+        setScoreUpdated(true); //Trigger scoreboard refresh
       } else {
         setMessage(`${game.getCurrentPlayer().name}'s turn`);
       }
@@ -46,6 +47,7 @@ function App() {
     setGrid(newGame.getBoard());
     setMessage(`${newGame.getCurrentPlayer().name}'s turn`);
     setShowModal(false);
+    setScoreUpdated(false); // Set the scoreUpdated state
   };
 
   return (
@@ -55,7 +57,7 @@ function App() {
       />
       <GameStatus message={message} />
       <BoardComponent grid={grid} onCellClick={handleCellClick} />
-      <Scoreboard />
+      <Scoreboard scoreUpdated={scoreUpdated} />
       <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
         <div className="flex flex-col gap-4">
           <span className="text-xl text-center font-bold">
