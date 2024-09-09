@@ -5,7 +5,6 @@ import { Player } from './classes/Player';
 import Header from './components/Header';
 import BoardComponent from './components/BoardComponent';
 import GameStatus from './components/GameStatus';
-import WinnerPopup from './components/WinnerPopup';
 
 function App() {
   const [player1Name, setPlayer1Name] = useState(new Player('Player 1', 'X'));
@@ -14,14 +13,12 @@ function App() {
   const [grid, setGrid] = useState(game.getBoard());
   const [message, setMessage] = useState('');
   const [showPopup, setShowPopup] = useState(true);
-  const [winner, setWinner] = useState('');
 
   const handleCellClick = (col: number) => {
     if (game && game.playTurn(col)) {
       setGrid([...game.getBoard()]);
       if (game.winner) {
         setMessage(`${game.winner.name} wins!`);
-        setWinner(game.winner.name);
       } else {
         setMessage(`${game.getCurrentPlayer().name}'s turn`);
       }
@@ -50,13 +47,7 @@ function App() {
     <>
       <Header players={[player1Name, player2Name]} />
       {showPopup && <GameModePopup onSubmit={handleGameModeSubmit} />}
-      {winner && (
-        <WinnerPopup
-          winner={winner}
-          setWinner={setWinner}
-          setShowPopup={setShowPopup}
-        />
-      )}
+
       <GameStatus message={message} />
       <BoardComponent grid={grid} onCellClick={handleCellClick} />
     </>
