@@ -36,8 +36,19 @@ export class AIPlayer extends PlayerBaseClass {
   }
 
   public playTurn(board: Board): number {
-    // TODO: check difficulty and use the correct AI
+    if (this.difficulty === 1) return this.dumbAI(board);
+
     return this.easyAI(board);
+  }
+
+  private dumbAI(board: Board): number {
+    const availableCols = board.getAvailableColumns();
+    if (availableCols.length > 0) {
+      return availableCols[Math.floor(Math.random() * availableCols.length)];
+    }
+
+    // FIX: A full board should not let anyone playTurn
+    return 1;
   }
 
   private easyAI(board: Board): number {
