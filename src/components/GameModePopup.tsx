@@ -7,6 +7,8 @@ type GameModeProps = {
 
 type GameMode = 'Human vs Human' | 'Human vs AI' | 'AI vs AI';
 
+const minNameLength = 3;
+
 const GameModePopup = ({ onSubmit }: GameModeProps) => {
   const [selectedMode, setSelectedMode] = useState<GameMode>('Human vs Human');
   const [player1Difficulty, setPlayer1Difficulty] = useState(1);
@@ -124,6 +126,7 @@ const GameModePopup = ({ onSubmit }: GameModeProps) => {
                 <input
                   type="text"
                   placeholder="Enter Player 1 Name"
+                  minLength={minNameLength}
                   value={player1Name}
                   onChange={(e) => setPlayer1Name(e.target.value)}
                   className="border p-2 rounded-md outline-none"
@@ -131,6 +134,7 @@ const GameModePopup = ({ onSubmit }: GameModeProps) => {
                 <input
                   type="text"
                   placeholder="Player 2 Name"
+                  minLength={minNameLength}
                   value={player2Name}
                   onChange={(e) => setPlayer2Name(e.target.value)}
                   className="border p-2 rounded-md outline-none"
@@ -196,6 +200,7 @@ const GameModePopup = ({ onSubmit }: GameModeProps) => {
                   type="text"
                   className="border p-2 rounded-md outline-none"
                   placeholder="Enter Player Name"
+                  minLength={minNameLength}
                   value={player1Name}
                   onChange={(e) => setPlayer1Name(e.target.value)}
                 />
