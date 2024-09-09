@@ -1,13 +1,14 @@
-import { Board } from './Board';
-import { Player, PlayerSymbol } from './Player';
-import { WinChecker } from './WinChecker';
 import { saveScoreToLocalStorage } from '../utils/scoreboardLocalstorage';
+import { Board, BoardGrid, BoardLocation } from './Board';
+import { Player } from './Player';
+import { WinChecker } from './WinChecker';
 
 export class Game {
   private board: Board;
   private players: Player[];
   private currentPlayerIndex: number;
   public winner: Player | null;
+  public winningConnection: BoardLocation[] | null;
   private movesCount: { [key: string]: number }; // Tracks moves for each player
 
   constructor(player1: Player, player2: Player) {
@@ -15,110 +16,58 @@ export class Game {
     this.players = [player1, player2];
     this.currentPlayerIndex = 0;
     this.winner = null;
+    this.winningConnection = null;
+
     this.movesCount = { X: 0, O: 0 }; // Initialize move counts
   }
 
-  public playTurn(col: number): boolean {
-    if (this.winner) return false;
-
-    const currentPlayer = this.players[this.currentPlayerIndex];
-    const lastMove = this.board.makeMove(col, currentPlayer.symbol);
-
-    if (lastMove.x < 0 || lastMove.y < 0) return false;
+  /** @returns is the game over (win or draw) */
+  public moveToNextTurn() {
+    const prevPlayer = this.getCurrentPlayer();
 
     // Increment move count for the current player
-    this.movesCount[currentPlayer.symbol]++;
+    // NOTE: could be moved to player class?
+    this.movesCount[prevPlayer.symbol]++;
 
-    if (WinChecker.checkForWin(lastMove, this.board.getGrid())) {
+    this.updateWinner();
+    if (this.winner) return true;
+    if (this.board.isFull()) return true; // It's a draw
+
+    this.switchPlayer();
+    return false;
+  }
+
+  private updateWinner() {
+    const grid = this.getGrid();
+    const currentPlayer = this.getCurrentPlayer();
+    const lastMove = this.board.lastMove;
+
+    const winningConnection = WinChecker.checkForWin(lastMove, grid);
+    if (winningConnection) {
       this.winner = currentPlayer;
+      this.winningConnection = winningConnection;
 
       // Save the score to localStorage when the game ends
       saveScoreToLocalStorage(
         currentPlayer.name,
         this.movesCount[currentPlayer.symbol]
       );
-    } else if (this.board.isFull()) {
-      this.winner = null; // It's a draw
-    } else {
-      this.switchPlayer();
-      if (this.players[this.currentPlayerIndex].isAI) {
-        this.playAITurn();
-        //this.dumbAI();
-      }
     }
-    return true;
-  }
-
-  private playAITurn(): void {
-    const aiPlayer = this.players[this.currentPlayerIndex];
-    const opponentPlayer = this.players[1 - this.currentPlayerIndex];
-
-    // 1. Check if AI can win on this move
-    let col = this.findWinningMove(aiPlayer.symbol);
-    if (col !== null) {
-      this.playTurn(col);
-      return;
-    }
-
-    // 2. Check if opponent can win next move, block it
-    col = this.findWinningMove(opponentPlayer.symbol);
-    if (col !== null) {
-      this.playTurn(col);
-      return;
-    }
-
-    // 3. If no immediate win or block, choose a random available column
-    const availableCols = this.getAvailableColumns();
-    if (availableCols.length > 0) {
-      col = availableCols[Math.floor(Math.random() * availableCols.length)];
-      this.playTurn(col);
-    }
-  }
-
-  private dumbAI(): void {
-    const availableCols = this.getAvailableColumns();
-    if (availableCols.length > 0) {
-      const randomCol =
-        availableCols[Math.floor(Math.random() * availableCols.length)];
-      this.playTurn(randomCol);
-    }
-  }
-
-  private findWinningMove(symbol: PlayerSymbol): number | null {
-    for (let col = 0; col < this.board.getGrid()[0].length; col++) {
-      if (
-        WinChecker.checkForWin(
-          this.board.makeMove(col, symbol),
-          this.board.getGrid()
-        )
-      ) {
-        this.board.undoMove(col); // Undo the move to keep the board state
-        return col;
-      }
-      this.board.undoMove(col); // Undo the move to keep the board state
-    }
-    return null;
-  }
-
-  private getAvailableColumns(): number[] {
-    const availableCols: number[] = [];
-    for (let col = 0; col < this.board.getGrid()[0].length; col++) {
-      if (this.board.getGrid()[0][col] === '') {
-        availableCols.push(col);
-      }
-    }
-    return availableCols;
   }
 
   private switchPlayer(): void {
     this.currentPlayerIndex = 1 - this.currentPlayerIndex;
   }
 
-  public getBoard(): string[][] {
+  public getBoard(): Board {
+    return this.board;
+  }
+
+  public getGrid(): BoardGrid {
     return this.board.getGrid();
   }
 
-  public getCurrentPlayer(): Player {
+  public getCurrentPlayer() {
     return this.players[this.currentPlayerIndex];
   }
 }
