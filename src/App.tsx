@@ -1,21 +1,16 @@
-import GameModePopup from './components/GameModePopup';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Game } from './classes/Game';
 import { AIPlayer, HumanPlayer, Player } from './classes/Player';
 import BoardComponent from './components/BoardComponent';
+import GameModePopup from './components/GameModePopup';
 import GameStatus from './components/GameStatus';
 import Header from './components/Header';
 import Scoreboard from './components/Scoreboard';
 import Modal from './components/ui/Modal';
 import { wait } from './utils/time';
 
-// NOTE: Mock players until we have a working popup
-// const playerX = new HumanPlayer('Player 1', 'X');
-const playerX = new AIPlayer(1, 'X');
-// const playerO = new HumanPlayer('Player 2', 'O');
-const playerO = new AIPlayer(2, 'O');
-
-let game = new Game(playerX, playerO);
+// FIX: don't render app/board until we have selected players for the first time so we don't have to create a fake game?
+let game = new Game(new HumanPlayer('', 'X'), new HumanPlayer('', 'O'));
 
 function App() {
   const [showPopup, setShowPopup] = useState(true);
@@ -23,7 +18,6 @@ function App() {
   const [message, setMessage] = useState(
     `${game.getCurrentPlayer().name}'s turn`
   );
-  const [isPlayer1Turn, setIsPlayer1Turn] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
   const updateUi = () => {
@@ -36,7 +30,6 @@ function App() {
     if (game.winner) setShowModal(true);
   };
 
-  // FIX: player two always starts
   const nextTurn = () => {
     const gameOver = game.moveToNextTurn();
     updateUi();
@@ -55,15 +48,6 @@ function App() {
     nextTurn();
   };
 
-  // NOTE: Hack until we get a real start button
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      nextTurn();
-    }, 10);
-    return () => clearTimeout(timeout);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const handleCellClick = (col: number) => {
     const currentPlayer = game.getCurrentPlayer();
     if (game.winner || currentPlayer instanceof AIPlayer) return;
@@ -73,22 +57,19 @@ function App() {
     if (!validMove) return;
     nextTurn();
   };
+
   const resetGame = () => {
-    setIsPlayer1Turn(!isPlayer1Turn);
-
-    const startingPlayer = isPlayer1Turn ? playerO : playerX;
-    const secondPlayer = isPlayer1Turn ? playerX : playerO;
-
-    game = new Game(startingPlayer, secondPlayer);
-    updateUi();
+    // NOTE: reverse players to change who goes first. Also affects GameStatus, is this wanted behaviour?
+    game = new Game(game.players[1], game.players[0]);
     setShowModal(false);
     nextTurn();
   };
 
+  // TODO: send player names as props when called from reset game model and only create new player if name changes
   function handleGameModeSubmit(player1: Player, player2: Player) {
     game = new Game(player1, player2);
-    updateUi();
     setShowPopup(false);
+    nextTurn();
   }
 
   return (

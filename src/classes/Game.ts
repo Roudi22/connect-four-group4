@@ -14,7 +14,7 @@ export class Game {
   constructor(player1: Player, player2: Player) {
     this.board = new Board();
     this.players = [player1, player2];
-    this.currentPlayerIndex = 0;
+    this.currentPlayerIndex = 1; // NOTE: switchPlayer runs before first turn, so player with index 0 will start
     this.winner = null;
     this.winningConnection = null;
 
