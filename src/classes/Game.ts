@@ -10,12 +10,18 @@ export class Game {
   public winner: Player | null;
   private movesCount: { [key: string]: number }; // Tracks moves for each player
 
+  // Time tracking variables
+  private startTime: number; // The time when the current player's turn started
+  private timeSpent: { [key: string]: number }; // Tracks time spent by each player in seconds
+
   constructor(player1: Player, player2: Player) {
     this.board = new Board();
     this.players = [player1, player2];
     this.currentPlayerIndex = 0;
     this.winner = null;
     this.movesCount = { X: 0, O: 0 }; // Initialize move counts
+    this.startTime = Date.now(); // Start time for the first player
+    this.timeSpent = { X: 0, O: 0 }; // Initialize time spent
   }
 
   public playTurn(col: number): boolean {
@@ -29,13 +35,21 @@ export class Game {
     // Increment move count for the current player
     this.movesCount[currentPlayer.symbol]++;
 
+    // Calculate and add time spent by current player
+    const currentTime = Date.now();
+    this.timeSpent[currentPlayer.symbol] += Math.floor(
+      (currentTime - this.startTime) / 1000
+    );
+    this.startTime = currentTime; // Reset start time for the next player
+
     if (WinChecker.checkForWin(lastMove, this.board.getGrid())) {
       this.winner = currentPlayer;
 
       // Save the score to localStorage when the game ends
       ScoreboardLocalStorage.saveScore(
         currentPlayer.name,
-        this.movesCount[currentPlayer.symbol]
+        this.movesCount[currentPlayer.symbol],
+        this.timeSpent[currentPlayer.symbol]
       );
     } else if (this.board.isFull()) {
       this.winner = null; // It's a draw
@@ -111,7 +125,17 @@ export class Game {
   }
 
   private switchPlayer(): void {
+    // Switch the current player and update start time
     this.currentPlayerIndex = 1 - this.currentPlayerIndex;
+    this.startTime = Date.now(); // Set the start time for the new player
+  }
+
+  public getTimeSpent(): { [key: string]: number } {
+    return this.timeSpent;
+  }
+
+  public getMovesCount(): { [key: string]: number } {
+    return this.movesCount;
   }
 
   public getBoard(): string[][] {
