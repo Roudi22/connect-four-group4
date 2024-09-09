@@ -24,6 +24,23 @@ export class Game {
     this.timeSpent = { X: 0, O: 0 }; // Initialize time spent
   }
 
+  // Time converted to multiplier (more time = lower multiplier)
+  private calculateTimeMultiplier(timeTaken: number): number {
+    if (timeTaken < 10) {
+      return 6;
+    } else if (timeTaken < 20) {
+      return 5;
+    } else if (timeTaken < 30) {
+      return 4;
+    } else if (timeTaken < 40) {
+      return 3;
+    } else if (timeTaken < 50) {
+      return 2;
+    } else {
+      return 1;
+    }
+  }
+
   public playTurn(col: number): boolean {
     if (this.winner) return false;
 
@@ -48,18 +65,37 @@ export class Game {
       // Validate score and check if it's an "Impossible score"
       const isValid = this.validateScore(currentPlayer.symbol);
 
-        if (isValid) {
-        const moveMultiplier = this.calculateMoveMultiplier(currentPlayer.symbol);
+      // Save the score to localStorage when the game ends
 
-        // Only save the score and time to local storage when the game ends if it is valid
+      if (isValid) {
+        const moveMultiplier = this.calculateMoveMultiplier(
+          currentPlayer.symbol
+        );
+        console.log(
+          `Move multiplier for ${currentPlayer.symbol}:`,
+          moveMultiplier
+        ); // Log move multiplier
+
+        // Calculate the time multiplier based on the time taken
+        const timeTaken = this.timeSpent[currentPlayer.symbol];
+        const timeMultiplier = this.calculateTimeMultiplier(timeTaken);
+        console.log(
+          `Time multiplier for ${currentPlayer.symbol}:`,
+          timeMultiplier
+        ); // Log time multiplier
+
+        const finalScore = moveMultiplier * timeMultiplier;
+        console.log(`Score ${currentPlayer.symbol}:`, finalScore); // score
+
+        // Only save the score and time to localstorage if it is valid
         ScoreboardLocalStorage.saveScore(
           currentPlayer.name,
           this.movesCount[currentPlayer.symbol],
-          this.timeSpent[currentPlayer.symbol],
-          moveMultiplier
+          timeTaken,
+          finalScore
         );
       } else {
-        alert("Impossible score!"); // Show popup if the score is invalid
+        alert('Impossible score!'); // Show popup if the score is invalid
       }
     } else if (this.board.isFull()) {
       this.winner = null; // It's a draw
@@ -81,6 +117,7 @@ export class Game {
     return moves >= 4 && moveMultiplier <= 17;
   }
 
+  // moves converted to multiplier (move moves = lower multiplier)
   private calculateMoveMultiplier(symbol: PlayerSymbol): number {
     const moves = this.movesCount[symbol];
 
@@ -90,7 +127,6 @@ export class Game {
     }
     return 0; // Invalid moves (less than 4 or over 21)
   }
-
 
   private playAITurn(): void {
     const aiPlayer = this.players[this.currentPlayerIndex];
