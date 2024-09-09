@@ -1,19 +1,25 @@
 export class ScoreboardLocalStorage {
   private static readonly STORAGE_KEY = 'connect4Scoreboard';
 
-  public static saveScore(winnerName: string, moves: number, time: number): void {
+  public static saveScore(
+    winnerName: string,
+    moves: number,
+    time: number,
+    moveMultiplier: number
+  ): void {
     // Get the current scoreboard from localStorage
     let scoreboard = JSON.parse(localStorage.getItem(this.STORAGE_KEY) || '[]');
 
-    // Add the new result with moves and time
-    scoreboard.push({ winnerName, moves, time });
+    // Calculate score (moves * move multiplier for now)
+    const score = moves * moveMultiplier;
+
+    // Add the new result with moves and time and score
+    scoreboard.push({ winnerName, moves, time, score });
 
     // Sort by moves (ascending order) and time as a tiebreaker
+    // Sort by score (lower score is better in this case)
     scoreboard.sort(
-      (
-        a: { moves: number; time: number },
-        b: { moves: number; time: number }
-      ) => a.moves - b.moves || a.time - b.time
+      (a: { score: number }, b: { score: number }) => b.score - a.score
     );
 
     // Only save the top 5 scores
@@ -27,6 +33,7 @@ export class ScoreboardLocalStorage {
     winnerName: string;
     moves: number;
     time: number;
+    score: number;
   }[] {
     return JSON.parse(localStorage.getItem(this.STORAGE_KEY) || '[]');
   }

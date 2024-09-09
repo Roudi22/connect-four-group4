@@ -45,12 +45,22 @@ export class Game {
     if (WinChecker.checkForWin(lastMove, this.board.getGrid())) {
       this.winner = currentPlayer;
 
-      // Save the score to localStorage when the game ends
-      ScoreboardLocalStorage.saveScore(
-        currentPlayer.name,
-        this.movesCount[currentPlayer.symbol],
-        this.timeSpent[currentPlayer.symbol]
-      );
+      // Validate score and check if it's an "Impossible score"
+      const isValid = this.validateScore(currentPlayer.symbol);
+
+        if (isValid) {
+        const moveMultiplier = this.calculateMoveMultiplier(currentPlayer.symbol);
+
+        // Only save the score and time to local storage when the game ends if it is valid
+        ScoreboardLocalStorage.saveScore(
+          currentPlayer.name,
+          this.movesCount[currentPlayer.symbol],
+          this.timeSpent[currentPlayer.symbol],
+          moveMultiplier
+        );
+      } else {
+        alert("Impossible score!"); // Show popup if the score is invalid
+      }
     } else if (this.board.isFull()) {
       this.winner = null; // It's a draw
     } else {
@@ -62,6 +72,25 @@ export class Game {
     }
     return true;
   }
+
+  private validateScore(symbol: PlayerSymbol): boolean {
+    const moves = this.movesCount[symbol];
+
+    // If moves are less than 4 or the move multiplier exceeds 17, it's an impossible score
+    const moveMultiplier = this.calculateMoveMultiplier(symbol);
+    return moves >= 4 && moveMultiplier <= 17;
+  }
+
+  private calculateMoveMultiplier(symbol: PlayerSymbol): number {
+    const moves = this.movesCount[symbol];
+
+    // Calculate multiplier based on number of moves
+    if (moves >= 4 && moves <= 21) {
+      return 21 - moves + 1; // Example: 4 moves -> 17 multiplier, 5 moves -> 16 multiplier
+    }
+    return 0; // Invalid moves (less than 4 or over 21)
+  }
+
 
   private playAITurn(): void {
     const aiPlayer = this.players[this.currentPlayerIndex];
