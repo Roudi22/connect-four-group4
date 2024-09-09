@@ -5,7 +5,7 @@ import { WinChecker } from './WinChecker';
 
 export class Game {
   private board: Board;
-  private players: Player[];
+  public players: Player[];
   private currentPlayerIndex: number;
   public winner: Player | null;
   public winningConnection: BoardLocation[] | null;

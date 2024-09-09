@@ -1,7 +1,7 @@
 import GameModePopup from './components/GameModePopup';
 import { useEffect, useState } from 'react';
 import { Game } from './classes/Game';
-import { AIPlayer, HumanPlayer } from './classes/Player';
+import { AIPlayer, HumanPlayer, Player } from './classes/Player';
 import BoardComponent from './components/BoardComponent';
 import GameStatus from './components/GameStatus';
 import Header from './components/Header';
@@ -15,16 +15,10 @@ const playerX = new AIPlayer(1, 'X');
 // const playerO = new HumanPlayer('Player 2', 'O');
 const playerO = new AIPlayer(2, 'O');
 
-// NOTE: Needs a reset game function or non const variable so we can make a new instance on a new game
 let game = new Game(playerX, playerO);
 
 function App() {
-
-  const [player1Name, setPlayer1Name] = useState(new Player('Player 1', 'X'));
-  const [player2Name, setPlayer2Name] = useState(new Player('Player 2', 'O'));
-  const [game, setGame] = useState(new Game(player1Name, player2Name));
   const [showPopup, setShowPopup] = useState(true);
-
   const [grid, setGrid] = useState(game.getGrid());
   const [message, setMessage] = useState(
     `${game.getCurrentPlayer().name}'s turn`
@@ -79,7 +73,7 @@ function App() {
     if (!validMove) return;
     nextTurn();
   };
-const resetGame = () => {
+  const resetGame = () => {
     setIsPlayer1Turn(!isPlayer1Turn);
 
     const startingPlayer = isPlayer1Turn ? playerO : playerX;
@@ -91,30 +85,16 @@ const resetGame = () => {
     nextTurn();
   };
 
-  function handleGameModeSubmit(
-    player1Name: string | undefined,
-    player2Name: string | undefined,
-    isAI: boolean | undefined
-  ) {
-    const player1 = new Player(player1Name || 'Player 1', 'X');
-    const player2 = new Player(
-      player2Name || (isAI ? 'Computer' : 'Player 2'),
-      'O'
-    );
-    setPlayer1Name(player1);
-    setPlayer2Name(player2);
-    setGame(new Game(player1, player2));
-    setGrid(game.getBoard());
-    setMessage(`${player1.name}'s playTurn`);
+  function handleGameModeSubmit(player1: Player, player2: Player) {
+    game = new Game(player1, player2);
+    updateUi();
     setShowPopup(false);
   }
 
   return (
     <>
-      <Header players={[player1Name, player2Name]} />
+      <Header players={game.players} />
       {showPopup && <GameModePopup onSubmit={handleGameModeSubmit} />}
-
-  
 
       <GameStatus message={message} />
       <BoardComponent grid={grid} onCellClick={handleCellClick} />

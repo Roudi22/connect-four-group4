@@ -1,11 +1,8 @@
 import { useState } from 'react';
+import { Player } from '../classes/Player';
 
 type GameModeProps = {
-  onSubmit: (
-    player1Name?: string | undefined,
-    player2Name?: string | undefined,
-    isAI?: boolean | undefined
-  ) => void | undefined;
+  onSubmit: (player1: Player, player2: Player) => void;
 };
 
 const GameModePopup = ({ onSubmit }: GameModeProps) => {
