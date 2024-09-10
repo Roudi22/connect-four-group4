@@ -15,9 +15,7 @@ let game = new Game(new HumanPlayer('', 'X'), new HumanPlayer('', 'O'));
 function App() {
   const [showPopup, setShowPopup] = useState(true);
   const [grid, setGrid] = useState(game.getGrid());
-  const [message, setMessage] = useState(
-    `${game.getCurrentPlayer().name}'s turn`
-  );
+  const [message, setMessage] = useState('Welcome!');
   const [showModal, setShowModal] = useState(false);
 
   const updateUi = () => {
@@ -26,7 +24,6 @@ function App() {
         ? `${game.winner.name} wins!`
         : `${game.getCurrentPlayer().name}'s turn`
     );
-    console.log('current player', game.getCurrentPlayer());
     setGrid([...game.getGrid()]);
     if (game.winner) setShowModal(true);
   };

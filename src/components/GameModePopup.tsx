@@ -262,21 +262,9 @@ const GameModePopup = ({ onSubmit }: GameModeProps) => {
                   </label>
                 </div>
                 <div className="rounded-s-md p-1">
-                  <label htmlFor="aiHard" className="mr-2">
+                  <label htmlFor="" className="mr-2">
                     AI Player 2
                   </label>
-                  <input
-                    type="radio"
-                    id="aiHard2"
-                    name="gameDifficulty"
-                    value={2}
-                    checked={player2Difficulty === 2}
-                    onChange={(e) =>
-                      setPlayer2Difficulty(parseInt(e.target.value))
-                    }
-                    className="hidden"
-                  />
-
                   <input
                     type="radio"
                     id="aiEasy2"
@@ -294,10 +282,21 @@ const GameModePopup = ({ onSubmit }: GameModeProps) => {
                       player2Difficulty === 1
                         ? 'bg-blue-500 text-white'
                         : 'bg-gray-200'
-                    }`}
+                    } mr-2`}
                   >
                     Easy
                   </label>
+                  <input
+                    type="radio"
+                    id="aiHard2"
+                    name="gameDifficulty"
+                    value={2}
+                    checked={player2Difficulty === 2}
+                    onChange={(e) =>
+                      setPlayer2Difficulty(parseInt(e.target.value))
+                    }
+                    className="hidden"
+                  />
                   <label
                     htmlFor="aiHard2"
                     className={`cursor-pointer p-2 border rounded-md ${
