@@ -26,6 +26,7 @@ function App() {
         ? `${game.winner.name} wins!`
         : `${game.getCurrentPlayer().name}'s turn`
     );
+    console.log('current player', game.getCurrentPlayer());
     setGrid([...game.getGrid()]);
     if (game.winner) setShowModal(true);
   };
@@ -74,9 +75,8 @@ function App() {
 
   return (
     <>
-      <Header players={game.players} />
+      <Header players={game.players.map(({ name }) => name)} />
       {showPopup && <GameModePopup onSubmit={handleGameModeSubmit} />}
-
       <GameStatus message={message} />
       <BoardComponent grid={grid} onCellClick={handleCellClick} />
       <Scoreboard />

@@ -1,8 +1,7 @@
 import { avatar } from '../assets';
-import { Player } from '../classes/Player';
 
 type Props = {
-  players: Player[];
+  players: string[];
 };
 
 const Header = (props: Props) => {
@@ -18,7 +17,7 @@ const Header = (props: Props) => {
             alt="X"
             className="rounded-full border-2 border-slate-200"
           />
-          {props.players[0].name}
+          {props.players[0]}
         </div>
         <div className="flex items-center gap-2">
           <img
@@ -28,7 +27,7 @@ const Header = (props: Props) => {
             alt="X"
             className="rounded-full border-2 border-slate-200"
           />
-          <p>{props.players[1].name}</p>
+          <p>{props.players[1]}</p>
         </div>
       </div>
     </div>
