@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
+import { BoardLocation } from '../classes/Board';
 
 interface BoardComponentProps {
   grid: string[][];
   onCellClick: (col: number) => void;
+  winningConnection: BoardLocation[] | null;
 }
 
 const BoardComponent: React.FC<BoardComponentProps> = ({
   grid,
   onCellClick,
+  winningConnection,
 }) => {
   const [animatedCells, setAnimatedCells] = useState<(string | null)[][]>(
     grid.map((row) => row.map(() => null))
