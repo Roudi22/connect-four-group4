@@ -80,7 +80,11 @@ function App() {
       <Header players={game.players.map(({ name }) => name)} />
       {showPopup && <GameModePopup onSubmit={handleGameModeSubmit} />}
       <GameStatus message={message} />
-      <BoardComponent grid={grid} onCellClick={handleCellClick} />
+      <BoardComponent
+        grid={grid}
+        onCellClick={handleCellClick}
+        winningConnection={game.winningConnection}
+      />
       <Scoreboard scoreUpdated={scoreUpdated} />
       <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
         <div className="flex flex-col gap-4">

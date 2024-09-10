@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
+import { BoardLocation } from '../classes/Board';
 
 interface BoardComponentProps {
   grid: string[][];
   onCellClick: (col: number) => void;
+  winningConnection: BoardLocation[] | null;
 }
 
 const BoardComponent: React.FC<BoardComponentProps> = ({
   grid,
   onCellClick,
+  winningConnection,
 }) => {
   const [animatedCells, setAnimatedCells] = useState<(string | null)[][]>(
     grid.map((row) => row.map(() => null))
@@ -30,6 +33,15 @@ const BoardComponent: React.FC<BoardComponentProps> = ({
     setAnimatedCells(newAnimatedCells);
   }, [grid]); // Kör denna effekt varje gång `grid` ändras
 
+  const isWinningCell = (rowIndex: number, colIndex: number) => {
+    return (
+      winningConnection &&
+      winningConnection.some(
+        (location) => location.x === colIndex && location.y === rowIndex
+      )
+    );
+  };
+
   return (
     <div className="flex flex-col items-center mt-5">
       {grid.map((row, rowIndex) => (
@@ -37,7 +49,9 @@ const BoardComponent: React.FC<BoardComponentProps> = ({
           {row.map((cell, colIndex) => (
             <div
               key={colIndex}
-              className="w-[50px] h-[50px] border border-black flex items-center justify-center cursor-pointer text-[24px] m-1"
+              className={`w-[50px] h-[50px] border border-black flex items-center justify-center cursor-pointer text-[24px] m-1${
+                isWinningCell(rowIndex, colIndex) ? ' bg-green-500' : ''
+              }`}
               onClick={() => onCellClick(colIndex)}
             >
               <div className="p-4">
