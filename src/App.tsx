@@ -17,6 +17,7 @@ function App() {
   const [grid, setGrid] = useState(game.getGrid());
   const [message, setMessage] = useState('Welcome!');
   const [showModal, setShowModal] = useState(false);
+  const [scoreUpdated, setScoreUpdated] = useState(false); // State to track score updates
 
   const updateUi = () => {
     setMessage(
@@ -25,7 +26,10 @@ function App() {
         : `${game.getCurrentPlayer().name}'s turn`
     );
     setGrid([...game.getGrid()]);
-    if (game.winner) setShowModal(true);
+    if (game.winner) {
+      setScoreUpdated(true); //Trigger scoreboard refresh
+      setShowModal(true);
+    }
   };
 
   const nextTurn = () => {
@@ -60,6 +64,7 @@ function App() {
     // NOTE: reverse players to change who goes first. Also affects GameStatus, is this wanted behaviour?
     game = new Game(game.players[1], game.players[0]);
     setShowModal(false);
+    setScoreUpdated(false); // Set the scoreUpdated state
     nextTurn();
   };
 
@@ -76,7 +81,7 @@ function App() {
       {showPopup && <GameModePopup onSubmit={handleGameModeSubmit} />}
       <GameStatus message={message} />
       <BoardComponent grid={grid} onCellClick={handleCellClick} />
-      <Scoreboard />
+      <Scoreboard scoreUpdated={scoreUpdated} />
       <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
         <div className="flex flex-col gap-4">
           <span className="text-xl text-center font-bold">
