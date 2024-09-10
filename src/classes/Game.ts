@@ -1,5 +1,5 @@
 import { Board, BoardGrid, BoardLocation } from './Board';
-import { Player, PlayerSymbol } from './Player';
+import { HumanPlayer, Player, PlayerSymbol } from './Player';
 import { WinChecker } from './WinChecker';
 import { ScoreboardLocalStorage } from './scoreboardLocalstorage';
 
@@ -59,35 +59,41 @@ export class Game {
       this.winner = prevPlayer;
       this.winningConnection = winningConnection;
 
-      // Validate score and check if it's an "Impossible score"
-      const isValid = this.validateScore(prevPlayer.symbol);
-      if (isValid) {
-        const moveMultiplier = this.calculateMoveMultiplier(prevPlayer.symbol);
-        console.log(
-          `Move multiplier for ${prevPlayer.symbol}:`,
-          moveMultiplier
-        ); // Log move multiplier
+      if (prevPlayer instanceof HumanPlayer) {
+        // Validate score and check if it's an "Impossible score"
+        const isValid = this.validateScore(prevPlayer.symbol);
+        if (isValid) {
+          const moveMultiplier = this.calculateMoveMultiplier(
+            prevPlayer.symbol
+          );
+          console.log(
+            `Move multiplier for ${prevPlayer.symbol}:`,
+            moveMultiplier
+          ); // Log move multiplier
 
-        // Calculate the time multiplier based on the time taken
-        const timeTaken = this.timeSpent[prevPlayer.symbol];
-        const timeMultiplier = this.calculateTimeMultiplier(timeTaken);
-        console.log(
-          `Time multiplier for ${prevPlayer.symbol}:`,
-          timeMultiplier
-        ); // Log time multiplier
+          // Calculate the time multiplier based on the time taken
+          const timeTaken = this.timeSpent[prevPlayer.symbol];
+          const timeMultiplier = this.calculateTimeMultiplier(timeTaken);
+          console.log(
+            `Time multiplier for ${prevPlayer.symbol}:`,
+            timeMultiplier
+          ); // Log time multiplier
 
-        const finalScore = moveMultiplier * timeMultiplier;
-        console.log(`Score ${prevPlayer.symbol}:`, finalScore); // score
+          const finalScore = moveMultiplier * timeMultiplier;
+          console.log(`Score ${prevPlayer.symbol}:`, finalScore); // score
 
-        // Only save the score and time to localstorage if it is valid
-        ScoreboardLocalStorage.saveScore(
-          prevPlayer.name,
-          this.movesCount[prevPlayer.symbol],
-          timeTaken,
-          finalScore
-        );
+          // Only save the score and time to localstorage if it is valid
+          ScoreboardLocalStorage.saveScore(
+            prevPlayer.name,
+            this.movesCount[prevPlayer.symbol],
+            timeTaken,
+            finalScore
+          );
+        } else {
+          alert('Impossible score!'); // Show popup if the score is invalid
+        }
       } else {
-        alert('Impossible score!'); // Show popup if the score is invalid
+        console.log('AI won, score is not added to the scoreboard')
       }
     }
   }
