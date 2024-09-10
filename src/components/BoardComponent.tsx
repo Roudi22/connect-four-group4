@@ -33,6 +33,15 @@ const BoardComponent: React.FC<BoardComponentProps> = ({
     setAnimatedCells(newAnimatedCells);
   }, [grid]); // Kör denna effekt varje gång `grid` ändras
 
+  const isWinningCell = (rowIndex: number, colIndex: number) => {
+    return (
+      winningConnection &&
+      winningConnection.some(
+        (location) => location.x === rowIndex && location.y === colIndex
+      )
+    );
+  };
+
   return (
     <div className="flex flex-col items-center mt-5">
       {grid.map((row, rowIndex) => (
@@ -40,7 +49,9 @@ const BoardComponent: React.FC<BoardComponentProps> = ({
           {row.map((cell, colIndex) => (
             <div
               key={colIndex}
-              className="w-[50px] h-[50px] border border-black flex items-center justify-center cursor-pointer text-[24px] m-1"
+              className={`w-[50px] h-[50px] border border-black flex items-center justify-center cursor-pointer text-[24px] m-1${
+                isWinningCell(rowIndex, colIndex) ? 'bg-green-500' : ''
+              }`}
               onClick={() => onCellClick(colIndex)}
             >
               <div className="p-4">
