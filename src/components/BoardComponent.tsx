@@ -37,7 +37,7 @@ const BoardComponent: React.FC<BoardComponentProps> = ({
     return (
       winningConnection &&
       winningConnection.some(
-        (location) => location.x === rowIndex && location.y === colIndex
+        (location) => location.x === colIndex && location.y === rowIndex
       )
     );
   };
@@ -50,7 +50,7 @@ const BoardComponent: React.FC<BoardComponentProps> = ({
             <div
               key={colIndex}
               className={`w-[50px] h-[50px] border border-black flex items-center justify-center cursor-pointer text-[24px] m-1${
-                isWinningCell(rowIndex, colIndex) ? 'bg-green-500' : ''
+                isWinningCell(rowIndex, colIndex) ? ' bg-green-500' : ''
               }`}
               onClick={() => onCellClick(colIndex)}
             >
