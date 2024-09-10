@@ -1,29 +1,23 @@
-import GameModePopup from './components/GameModePopup';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Game } from './classes/Game';
-import { AIPlayer, HumanPlayer } from './classes/Player';
+import { AIPlayer, HumanPlayer, Player } from './classes/Player';
 import BoardComponent from './components/BoardComponent';
+import GameModePopup from './components/GameModePopup';
 import GameStatus from './components/GameStatus';
 import Header from './components/Header';
 import Scoreboard from './components/Scoreboard';
 import Modal from './components/ui/Modal';
 import { wait } from './utils/time';
 
+// FIX: don't render app/board until we have selected players for the first time so we don't have to create a fake game?
+let game = new Game(new HumanPlayer('', 'X'), new HumanPlayer('', 'O'));
+
 function App() {
-  const [player1Name, setPlayer1Name] = useState<string>('');
-  const [player2Name, setPlayer2Name] = useState<string>('');
-  const [game, setGame] = useState(
-    new Game(
-      new HumanPlayer(player1Name, 'X'),
-      new HumanPlayer(player2Name, 'O')
-    )
-  );
   const [showPopup, setShowPopup] = useState(true);
   const [grid, setGrid] = useState(game.getGrid());
-  const [message, setMessage] = useState(
-    `${game.getCurrentPlayer().name}'s turn`
-  );
+  const [message, setMessage] = useState('Welcome!');
   const [showModal, setShowModal] = useState(false);
+  const [scoreUpdated, setScoreUpdated] = useState(false); // State to track score updates
 
   const updateUi = () => {
     setMessage(
@@ -31,9 +25,11 @@ function App() {
         ? `${game.winner.name} wins!`
         : `${game.getCurrentPlayer().name}'s turn`
     );
-    console.log('current player', game.getCurrentPlayer());
     setGrid([...game.getGrid()]);
-    if (game.winner) setShowModal(true);
+    if (game.winner) {
+      setScoreUpdated(true); //Trigger scoreboard refresh
+      setShowModal(true);
+    }
   };
 
   const nextTurn = () => {
@@ -54,14 +50,6 @@ function App() {
     nextTurn();
   };
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      nextTurn();
-    }, 10);
-    return () => clearTimeout(timeout);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const handleCellClick = (col: number) => {
     const currentPlayer = game.getCurrentPlayer();
     if (game.winner || currentPlayer instanceof AIPlayer) return;
@@ -73,55 +61,27 @@ function App() {
   };
 
   const resetGame = () => {
+    // NOTE: reverse players to change who goes first. Also affects GameStatus, is this wanted behaviour?
+    game = new Game(game.players[1], game.players[0]);
     setShowModal(false);
-    setTimeout(() => {
-      setShowPopup(true);
-      setPlayer1Name('');
-      setPlayer2Name('');
-      const newGame = new Game(
-        new HumanPlayer(player1Name, 'X'),
-        new HumanPlayer(player2Name, 'O')
-      );
-      setGame(newGame);
-      setGrid(newGame.getGrid());
-      setMessage('');
-    }, 0);
+    setScoreUpdated(false); // Set the scoreUpdated state
+    nextTurn();
   };
 
-  function handleGameModeSubmit(
-    player1Name: HumanPlayer | AIPlayer | undefined,
-    player2Name: HumanPlayer | AIPlayer | undefined
-  ) {
+  // TODO: send player names as props when called from reset game model and only create new player if name changes
+  function handleGameModeSubmit(player1: Player, player2: Player) {
+    game = new Game(player1, player2);
     setShowPopup(false);
-    if (!player1Name || !player2Name) return;
-    if (player1Name instanceof AIPlayer && player2Name instanceof AIPlayer) {
-      console.log('player1', player1Name);
-      setPlayer1Name(`Difficulty ${player1Name.difficulty} AI `);
-      setPlayer2Name(`Difficulty ${player2Name.difficulty} AI`);
-
-      updateUi();
-      nextTurn();
-      const newGame = new Game(player1Name, player2Name);
-      setGame(newGame);
-      setGrid(newGame.getGrid());
-    } else {
-      setPlayer1Name(player1Name.name);
-      setPlayer2Name(player2Name.name);
-      console.log('player1', player1Name);
-      updateUi();
-      const newGame = new Game(player1Name, player2Name);
-      setGame(newGame);
-      setGrid(newGame.getGrid());
-    }
+    nextTurn();
   }
 
   return (
     <>
-      <Header players={[player1Name, player2Name]} />
+      <Header players={game.players.map(({ name }) => name)} />
       {showPopup && <GameModePopup onSubmit={handleGameModeSubmit} />}
       <GameStatus message={message} />
       <BoardComponent grid={grid} onCellClick={handleCellClick} />
-      <Scoreboard />
+      <Scoreboard scoreUpdated={scoreUpdated} />
       <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
         <div className="flex flex-col gap-4">
           <span className="text-xl text-center font-bold">

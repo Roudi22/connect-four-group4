@@ -1,51 +1,39 @@
 import { useState } from 'react';
-import { HumanPlayer, AIPlayer } from '../classes/Player';
+import { AIPlayer, HumanPlayer, Player } from '../classes/Player';
+
 type GameModeProps = {
-  onSubmit: (
-    player1Name?: HumanPlayer | AIPlayer | undefined,
-    player2Name?: HumanPlayer | AIPlayer | undefined
-  ) => void | undefined;
+  onSubmit: (player1: Player, player2: Player) => void;
 };
 
+type GameMode = 'Human vs Human' | 'Human vs AI' | 'AI vs AI';
+
+const minNameLength = 3;
+
 const GameModePopup = ({ onSubmit }: GameModeProps) => {
-  const [selectedMode, setSelectedMode] = useState<string>('');
-  const [difficulty, setDifficulty] = useState<number>(1);
-  const [difficulty2, setDifficulty2] = useState<number>(1);
+  const [selectedMode, setSelectedMode] = useState<GameMode>('Human vs Human');
+  const [player1Difficulty, setPlayer1Difficulty] = useState(1);
+  const [player2Difficulty, setPlayer2Difficulty] = useState(1);
   const [player1Name, setPlayer1Name] = useState<string>('');
   const [player2Name, setPlayer2Name] = useState<string>('');
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    console.log('Selected Mode:', selectedMode);
-    console.log('Player 1 Name:', player1Name);
-    console.log('Player 2 Name:', player2Name);
-    console.log('Difficulty:', difficulty);
-    if (!player1Name.trim()) {
-      if (selectedMode === 'AI vs AI') {
-        onSubmit(new AIPlayer(difficulty, 'X'), new AIPlayer(difficulty2, 'O'));
-      }
-    }
 
-    if (selectedMode === 'Human vs Human') {
-      if (!player2Name.trim()) {
-        return;
-      }
-      onSubmit(
-        new HumanPlayer(player1Name, 'X'),
-        new HumanPlayer(player2Name, 'O')
-      );
-    } else if (selectedMode === 'Human vs AI') {
-      if (!difficulty) {
-        return;
-      }
-      onSubmit(
-        new HumanPlayer(player1Name, 'X'),
-        new AIPlayer(difficulty, 'O')
-      );
-    }
+    const player1 =
+      selectedMode === 'AI vs AI'
+        ? new AIPlayer(player1Difficulty, 'X')
+        : new HumanPlayer(player1Name.trim(), 'X');
+    const player2 =
+      selectedMode === 'Human vs Human'
+        ? new HumanPlayer(player2Name.trim(), 'O')
+        : new AIPlayer(player2Difficulty, 'O');
+
+    onSubmit(player1, player2);
 
     // Reset form
-    setSelectedMode('');
+    setSelectedMode('Human vs Human');
+    setPlayer1Difficulty(1);
+    setPlayer2Difficulty(1);
     setPlayer1Name('');
     setPlayer2Name('');
   }
@@ -63,7 +51,7 @@ const GameModePopup = ({ onSubmit }: GameModeProps) => {
                 name="gameMode"
                 value="Human vs Human"
                 checked={selectedMode === 'Human vs Human'}
-                onChange={(e) => setSelectedMode(e.target.value)}
+                onChange={(e) => setSelectedMode(e.target.value as GameMode)}
                 className="hidden"
               />
               <label
@@ -84,7 +72,7 @@ const GameModePopup = ({ onSubmit }: GameModeProps) => {
                 name="gameMode"
                 value="Human vs AI"
                 checked={selectedMode === 'Human vs AI'}
-                onChange={(e) => setSelectedMode(e.target.value)}
+                onChange={(e) => setSelectedMode(e.target.value as GameMode)}
                 className="hidden"
               />
               <label
@@ -105,7 +93,7 @@ const GameModePopup = ({ onSubmit }: GameModeProps) => {
                 name="gameMode"
                 value="AI vs AI"
                 checked={selectedMode === 'AI vs AI'}
-                onChange={(e) => setSelectedMode(e.target.value)}
+                onChange={(e) => setSelectedMode(e.target.value as GameMode)}
                 className="hidden"
               />
               <label
@@ -132,6 +120,7 @@ const GameModePopup = ({ onSubmit }: GameModeProps) => {
                 <input
                   type="text"
                   placeholder="Enter Player 1 Name"
+                  minLength={minNameLength}
                   value={player1Name}
                   onChange={(e) => setPlayer1Name(e.target.value)}
                   className="border p-2 rounded-md outline-none"
@@ -139,6 +128,7 @@ const GameModePopup = ({ onSubmit }: GameModeProps) => {
                 <input
                   type="text"
                   placeholder="Player 2 Name"
+                  minLength={minNameLength}
                   value={player2Name}
                   onChange={(e) => setPlayer2Name(e.target.value)}
                   className="border p-2 rounded-md outline-none"
@@ -162,14 +152,16 @@ const GameModePopup = ({ onSubmit }: GameModeProps) => {
                       id="easy"
                       name="gameDifficulty"
                       value={1}
-                      checked={difficulty === 1}
-                      onChange={(e) => setDifficulty(parseInt(e.target.value))}
+                      checked={player2Difficulty === 1}
+                      onChange={(e) =>
+                        setPlayer2Difficulty(parseInt(e.target.value))
+                      }
                       className="hidden"
                     />
                     <label
                       htmlFor="easy"
                       className={`cursor-pointer px-6 py-2 border rounded-md ${
-                        difficulty === 1
+                        player2Difficulty === 1
                           ? 'bg-blue-500 text-white'
                           : 'bg-gray-200'
                       }`}
@@ -184,14 +176,16 @@ const GameModePopup = ({ onSubmit }: GameModeProps) => {
                       id="hard"
                       name="gameDifficulty"
                       value={2}
-                      checked={difficulty === 2}
-                      onChange={(e) => setDifficulty(parseInt(e.target.value))}
+                      checked={player2Difficulty === 2}
+                      onChange={(e) =>
+                        setPlayer2Difficulty(parseInt(e.target.value))
+                      }
                       className="hidden"
                     />
                     <label
                       htmlFor="hard"
                       className={`cursor-pointer px-6 py-2 border rounded-md ${
-                        difficulty === 2
+                        player2Difficulty === 2
                           ? 'bg-blue-500 text-white'
                           : 'bg-gray-200'
                       }`}
@@ -204,6 +198,7 @@ const GameModePopup = ({ onSubmit }: GameModeProps) => {
                   type="text"
                   className="border p-2 rounded-md outline-none"
                   placeholder="Enter Player Name"
+                  minLength={minNameLength}
                   value={player1Name}
                   onChange={(e) => setPlayer1Name(e.target.value)}
                 />
@@ -228,14 +223,16 @@ const GameModePopup = ({ onSubmit }: GameModeProps) => {
                     id="aiEasy1"
                     name="gameDifficulty"
                     value={1}
-                    checked={difficulty === 1}
-                    onChange={(e) => setDifficulty(parseInt(e.target.value))}
+                    checked={player1Difficulty === 1}
+                    onChange={(e) =>
+                      setPlayer1Difficulty(parseInt(e.target.value))
+                    }
                     className="hidden"
                   />
                   <label
                     htmlFor="aiEasy1"
                     className={`cursor-pointer p-2 border rounded-md ${
-                      difficulty === 1
+                      player1Difficulty === 1
                         ? 'bg-blue-500 text-white'
                         : 'bg-gray-200'
                     } mr-2`}
@@ -247,14 +244,16 @@ const GameModePopup = ({ onSubmit }: GameModeProps) => {
                     id="aiHard1"
                     name="gameDifficulty"
                     value={2}
-                    checked={difficulty === 2}
-                    onChange={(e) => setDifficulty(parseInt(e.target.value))}
+                    checked={player1Difficulty === 2}
+                    onChange={(e) =>
+                      setPlayer1Difficulty(parseInt(e.target.value))
+                    }
                     className="hidden"
                   />
                   <label
                     htmlFor="aiHard1"
                     className={`cursor-pointer p-2 border rounded-md ${
-                      difficulty === 2
+                      player1Difficulty === 2
                         ? 'bg-blue-500 text-white'
                         : 'bg-gray-200'
                     }`}
@@ -263,42 +262,45 @@ const GameModePopup = ({ onSubmit }: GameModeProps) => {
                   </label>
                 </div>
                 <div className="rounded-s-md p-1">
-                  <label htmlFor="aiHard" className="mr-2">
+                  <label htmlFor="" className="mr-2">
                     AI Player 2
+                  </label>
+                  <input
+                    type="radio"
+                    id="aiEasy2"
+                    name="gameDifficulty"
+                    value={1}
+                    checked={player2Difficulty === 1}
+                    onChange={(e) =>
+                      setPlayer2Difficulty(parseInt(e.target.value))
+                    }
+                    className="hidden"
+                  />
+                  <label
+                    htmlFor="aiEasy2"
+                    className={`cursor-pointer p-2 border rounded-md ${
+                      player2Difficulty === 1
+                        ? 'bg-blue-500 text-white'
+                        : 'bg-gray-200'
+                    } mr-2`}
+                  >
+                    Easy
                   </label>
                   <input
                     type="radio"
                     id="aiHard2"
                     name="gameDifficulty"
                     value={2}
-                    checked={difficulty === 2}
-                    onChange={(e) => setDifficulty2(parseInt(e.target.value))}
+                    checked={player2Difficulty === 2}
+                    onChange={(e) =>
+                      setPlayer2Difficulty(parseInt(e.target.value))
+                    }
                     className="hidden"
                   />
-
-                  <input
-                    type="radio"
-                    id="aiEasy2"
-                    name="gameDifficulty"
-                    value={1}
-                    checked={difficulty === 1}
-                    onChange={(e) => setDifficulty2(parseInt(e.target.value))}
-                    className="hidden"
-                  />
-                  <label
-                    htmlFor="aiEasy2"
-                    className={`cursor-pointer p-2 border rounded-md ${
-                      difficulty2 === 1
-                        ? 'bg-blue-500 text-white'
-                        : 'bg-gray-200'
-                    }`}
-                  >
-                    Easy
-                  </label>
                   <label
                     htmlFor="aiHard2"
                     className={`cursor-pointer p-2 border rounded-md ${
-                      difficulty2 === 2
+                      player2Difficulty === 2
                         ? 'bg-blue-500 text-white'
                         : 'bg-gray-200'
                     }`}

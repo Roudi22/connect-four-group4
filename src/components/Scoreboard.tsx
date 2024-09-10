@@ -1,17 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { getScoreboardFromLocalStorage } from '../utils/scoreboardLocalstorage';
+import { ScoreboardLocalStorage } from '../classes/scoreboardLocalstorage';
 
-const Scoreboard: React.FC = () => {
+interface ScoreboardProps {
+  scoreUpdated: boolean; // Prop to trigger updates
+}
+
+const Scoreboard: React.FC<ScoreboardProps> = ({ scoreUpdated }) => {
   // State to hold the list of scores
-  const [scores, setScores] = useState<{ winnerName: string; moves: number }[]>(
-    []
-  );
+  const [scores, setScores] = useState<
+    { winnerName: string; moves: number; time: number; score: number }[]
+  >([]);
 
   // Effect hook to fetch scores from local storage
-  useEffect(() => {
-    const fetchedScores = getScoreboardFromLocalStorage();
-    setScores(fetchedScores);
-  }, []);
+   useEffect(() => {
+     const fetchedScores = ScoreboardLocalStorage.getScoreboard();
+     setScores(fetchedScores);
+   }, [scoreUpdated]);
 
   // If there are no scores, display a message
   if (scores.length === 0) {
@@ -25,22 +29,21 @@ const Scoreboard: React.FC = () => {
     );
   }
 
-  return (
-    <section className="my-12 flex flex-col justify-center items-center">
-      <h2 className="text-2xl font-semibold mb-8 text-center">
-        Top 5 Scores (Least Moves First)
-      </h2>
-      {/* Table to display scores */}
-      <table className="table-auto border-collapse border outline outline-3 outline-gray-400 border-gray-300 rounded-lg overflow-hidden">
-        <thead>
-          <tr>
-            <th className="border border-gray-300 px-4 py-2">Rank</th>
-            <th className="border border-gray-300 px-4 py-2">Winner</th>
-            <th className="border border-gray-300 px-4 py-2">Moves</th>
-          </tr>
-        </thead>
-        <tbody>
-          {/* Map through scores and create table rows */}
+return (
+  <section className="my-12 flex flex-col justify-center items-center">
+    <h2 className="text-2xl font-semibold mb-8 text-center">Top 5 Scores</h2>
+    {/* Table to display scores */}
+    <table className="table-auto border-collapse border outline outline-3 outline-gray-400 border-gray-300 rounded-lg overflow-hidden">
+      <thead>
+        <tr>
+          <th className="border border-gray-300 px-4 py-2">Rank</th>
+          <th className="border border-gray-300 px-4 py-2">Winner</th>
+          <th className="border border-gray-300 px-4 py-2">Moves</th>
+          <th className="border border-gray-300 px-4 py-2">Time (s)</th>
+          <th className="border border-gray-300 px-4 py-2">Score</th>
+        </tr>
+      </thead>
+      <tbody>
           {scores.map((score, index) => (
             <tr key={index}>
               <td className="border border-gray-300 px-4 py-2 text-center">
@@ -52,12 +55,18 @@ const Scoreboard: React.FC = () => {
               <td className="border border-gray-300 px-4 py-2 text-center">
                 {score.moves} moves
               </td>
+              <td className="border border-gray-300 px-4 py-2 text-center">
+                {score.time} seconds
+              </td>
+              <td className="border border-gray-300 px-4 py-2 text-center">
+                {score.score} points
+              </td>
             </tr>
           ))}
         </tbody>
-      </table>
-    </section>
-  );
+    </table>
+  </section>
+);
 };
 
 export default Scoreboard;
