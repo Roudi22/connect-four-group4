@@ -1,8 +1,9 @@
-import { useState } from 'react';
+// src/App.tsx
+import React, { useState } from 'react';
 import { Game } from './classes/Game';
 import { AIPlayer, HumanPlayer, Player } from './classes/Player';
 import BoardComponent from './components/BoardComponent';
-import GameModePopup from './components/GameModePopup';
+import GameModePopupLogic from './components/GameModePopupLogic';
 import GameStatus from './components/GameStatus';
 import Header from './components/Header';
 import Scoreboard from './components/Scoreboard';
@@ -27,7 +28,7 @@ function App() {
     );
     setGrid([...game.getGrid()]);
     if (game.winner) {
-      setScoreUpdated(true); //Trigger scoreboard refresh
+      setScoreUpdated(true); // Trigger scoreboard refresh
       setShowModal(true);
     }
   };
@@ -78,7 +79,7 @@ function App() {
   return (
     <>
       <Header players={game.players.map(({ name }) => name)} />
-      {showPopup && <GameModePopup onSubmit={handleGameModeSubmit} />}
+      {showPopup && <GameModePopupLogic onSubmit={handleGameModeSubmit} />}
       <GameStatus message={message} />
       <BoardComponent
         grid={grid}
