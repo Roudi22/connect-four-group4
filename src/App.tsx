@@ -76,7 +76,7 @@ function App() {
   }
 
   return (
-    <>
+    <main className="flex flex-col">
       <Header players={game.players.map(({ name }) => name)} />
       {showPopup && <GameModePopup onSubmit={handleGameModeSubmit} />}
       <GameStatus message={message} />
@@ -99,7 +99,7 @@ function App() {
           </button>
         </div>
       </Modal>
-    </>
+    </main>
   );
 }
 

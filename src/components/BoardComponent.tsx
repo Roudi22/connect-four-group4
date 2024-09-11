@@ -47,20 +47,18 @@ const BoardComponent: React.FC<BoardComponentProps> = ({
     return grid[0][colIndex] !== '';
   };
   return (
-    <div className="flex flex-col items-center mt-5">
+    <div className="inline-flex flex-col items-center self-center mt-5 p-1 bg-blue-200 border border-black rounded">
       {grid.map((row, rowIndex) => (
         <div key={rowIndex} className="flex">
           {row.map((cell, colIndex) => (
             <div
               key={colIndex}
-              className={`w-[50px] h-[50px] border border-black flex items-center justify-center ${
+              className={`h-[40px] md:h-[50px] m-1 aspect-square border border-black rounded-full flex items-center justify-center ${
                 !isColumnFull(colIndex) && 'cursor-pointer'
-              } text-[24px] m-1 ${
-                isColumnFull(colIndex) ? 'cursor-not-allowed' : ''
-              } ${
+              } ${isColumnFull(colIndex) ? 'cursor-not-allowed' : ''} ${
                 isWinningCell(rowIndex, colIndex)
                   ? ' cursor-pointer bg-green-500'
-                  : ''
+                  : ' bg-white'
               }`}
               onClick={() => {
                 if (isColumnFull(colIndex)) return;
@@ -68,22 +66,20 @@ const BoardComponent: React.FC<BoardComponentProps> = ({
                 isColumnFull(colIndex);
               }}
             >
-              <div className="p-4">
-                {cell === 'X' && (
-                  <div
-                    className={`w-[40px] rounded-full h-[40px] bg-red-500 ${
-                      animatedCells[rowIndex][colIndex] ? 'animate-drop' : ''
-                    } ${isColumnFull(colIndex) ? 'opacity-50' : ''}`}
-                  ></div>
-                )}
-                {cell === 'O' && (
-                  <div
-                    className={`w-[40px] rounded-full h-[40px] bg-yellow-500 ${
-                      animatedCells[rowIndex][colIndex] ? 'animate-drop' : ''
-                    } ${isColumnFull(colIndex) ? 'opacity-50' : ''}`}
-                  ></div>
-                )}
-              </div>
+              {cell === 'X' && (
+                <div
+                  className={`h-[80%] rounded-full aspect-square bg-red-500 ${
+                    animatedCells[rowIndex][colIndex] ? 'animate-drop' : ''
+                  } ${isColumnFull(colIndex) ? 'opacity-50' : ''}`}
+                ></div>
+              )}
+              {cell === 'O' && (
+                <div
+                  className={`h-[80%] rounded-full aspect-square bg-yellow-500 ${
+                    animatedCells[rowIndex][colIndex] ? 'animate-drop' : ''
+                  } ${isColumnFull(colIndex) ? 'opacity-50' : ''}`}
+                ></div>
+              )}
             </div>
           ))}
         </div>
