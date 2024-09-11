@@ -55,13 +55,19 @@ export class Game {
     const lastMove = this.board.lastMove;
 
     const winningConnection = WinChecker.checkForWin(lastMove, grid);
+
     if (winningConnection) {
       this.winner = prevPlayer;
       this.winningConnection = winningConnection;
 
+      // Check if the game is PvP or PvE
+      const isPvP = this.players[0] instanceof HumanPlayer && this.players[1] instanceof HumanPlayer;
+
       if (prevPlayer instanceof HumanPlayer) {
+
         // Validate score and check if it's an "Impossible score"
         const isValid = this.validateScore(prevPlayer.symbol);
+
         if (isValid) {
           const moveMultiplier = this.calculateMoveMultiplier(
             prevPlayer.symbol
@@ -84,19 +90,24 @@ export class Game {
 
           // Only save the score and time to localstorage if it is valid
           ScoreboardLocalStorage.saveScore(
-            prevPlayer.name,
-            this.movesCount[prevPlayer.symbol],
-            timeTaken,
-            finalScore
-          );
+          prevPlayer.name,
+          this.movesCount[prevPlayer.symbol],
+          timeTaken,
+          finalScore,
+          isPvP // Pass the game mode
+        );
+
         } else {
           alert('Impossible score!'); // Show popup if the score is invalid
         }
+
       } else {
-        console.log('AI won, score is not added to the scoreboard')
-      }
+      console.log('AI won, score is not added to the scoreboard');
     }
-  }
+
+    }
+  };
+
 
   private validateScore(symbol: PlayerSymbol): boolean {
     const moves = this.movesCount[symbol];
