@@ -3,9 +3,10 @@ import { ScoreboardLocalStorage } from '../classes/scoreboardLocalstorage';
 
 interface ScoreboardProps {
   scoreUpdated: boolean; // Prop to trigger updates
+  gameMode: 'PvP' | 'PvE Easy' | 'PvE Hard'; // Game mode prop
 }
 
-const Scoreboard: React.FC<ScoreboardProps> = ({ scoreUpdated }) => {
+const Scoreboard: React.FC<ScoreboardProps> = ({ scoreUpdated, gameMode }) => {
   // State to hold the list of scores
   const [pvpScores, setPvPScores] = useState<
     {
@@ -35,7 +36,7 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ scoreUpdated }) => {
   // Track which scoreboard is currently being displayed
   const [currentScoreboard, setCurrentScoreboard] = useState<
     'PvP' | 'PvE Easy' | 'PvE Hard'
-  >('PvP');
+  >(gameMode); // Sets initial state to gameMode
 
   // Effect hook to fetch scores from local storage
   useEffect(() => {
@@ -46,6 +47,11 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ scoreUpdated }) => {
     setPvEScoresEasy(fetchedPvEScoresEasy);
     setPvEScoresHard(fetchedPvEScoresHard);
   }, [scoreUpdated]);
+
+  // When the gameMode changes, update the scoreboard
+  useEffect(() => {
+    setCurrentScoreboard(gameMode);
+  }, [gameMode]);
 
   // Render the correct scoreboard based on the current state
   const renderScores = () => {
