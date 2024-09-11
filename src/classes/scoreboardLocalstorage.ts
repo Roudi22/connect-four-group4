@@ -9,7 +9,7 @@ export class ScoreboardLocalStorage {
     time: number,
     finalScore: number,
     isPvP: boolean, // Determine if it's PvP or PvE
-    isDifficulty: number   // Difficulty select
+    isDifficulty: number // Difficulty select
   ): void {
     // Determines the appropriate storage key based on game type and difficulty
     const storageKey = isPvP
@@ -44,14 +44,20 @@ export class ScoreboardLocalStorage {
     moves: number;
     time: number;
     score: number;
-    }[] {
-      // Determine the appropriate storage key based on game type and difficulty
-      const storageKey = isPvP
-        ? this.PVP_STORAGE_KEY
-        : isDifficulty === 2
-        ? this.PVE_STORAGE_KEY_HARD
-        : this.PVE_STORAGE_KEY_EASY;
+  }[] {
+    // Determine the appropriate storage key based on game type and difficulty
+    const storageKey = isPvP
+      ? this.PVP_STORAGE_KEY
+      : isDifficulty === 2
+      ? this.PVE_STORAGE_KEY_HARD
+      : this.PVE_STORAGE_KEY_EASY;
 
-      return JSON.parse(localStorage.getItem(storageKey) || '[]');
-    }
+    return JSON.parse(localStorage.getItem(storageKey) || '[]');
+  }
+
+  public static clearScoreboard(): void {
+    localStorage.removeItem(this.PVP_STORAGE_KEY);
+    localStorage.removeItem(this.PVE_STORAGE_KEY_EASY);
+    localStorage.removeItem(this.PVE_STORAGE_KEY_HARD);
+  }
 }
