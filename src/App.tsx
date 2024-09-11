@@ -11,7 +11,14 @@ import Modal from './components/ui/Modal';
 import { wait } from './utils/time';
 
 // FIX: don't render app/board until we have selected players for the first time so we don't have to create a fake game?
-let game = new Game(new HumanPlayer('', 'X'), new HumanPlayer('', 'O'));
+// let game = new Game(new HumanPlayer('', 'X'), new HumanPlayer('', 'O'));
+const randomPlayer = (player1: Player, player2: Player): [Player, Player] => {
+  return Math.random() > 0.5 ? [player1, player2] : [player2, player1];
+};
+
+let game = new Game(
+  ...randomPlayer(new HumanPlayer('', 'X'), new HumanPlayer('', 'O'))
+);
 
 function App() {
   const [showPopup, setShowPopup] = useState(true);
@@ -74,13 +81,23 @@ function App() {
 
   // TODO: send player names as props when called from reset game model and only create new player if name changes
   function handleGameModeSubmit(player1: Player, player2: Player) {
-    game = new Game(player1, player2);
+    const [randomPlayer1, randomPlayer2] = randomPlayer(player1, player2);
+    game = new Game(randomPlayer1, randomPlayer2);
     // Determine if it is PvP or PvE game based on players
-    if (player1 instanceof HumanPlayer && player2 instanceof HumanPlayer) {
+    if (
+      randomPlayer1 instanceof HumanPlayer &&
+      randomPlayer2 instanceof HumanPlayer
+    ) {
       setCurrentMode('PvP');
-    } else if (player2 instanceof AIPlayer && player2.difficulty === 1) {
+    } else if (
+      randomPlayer2 instanceof AIPlayer &&
+      randomPlayer2.difficulty === 1
+    ) {
       setCurrentMode('PvE Easy');
-    } else if (player2 instanceof AIPlayer && player2.difficulty === 2) {
+    } else if (
+      randomPlayer2 instanceof AIPlayer &&
+      randomPlayer2.difficulty === 2
+    ) {
       setCurrentMode('PvE Hard');
     }
     setShowPopup(false);
