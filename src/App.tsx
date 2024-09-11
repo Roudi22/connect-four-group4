@@ -9,6 +9,7 @@ import Header from './components/Header';
 import Scoreboard from './components/Scoreboard';
 import Modal from './components/ui/Modal';
 import { wait } from './utils/time';
+import { ScoreboardLocalStorage } from './classes/scoreboardLocalstorage';
 
 // FIX: don't render app/board until we have selected players for the first time so we don't have to create a fake game?
 let game = new Game(new HumanPlayer('', 'X'), new HumanPlayer('', 'O'));
@@ -17,6 +18,7 @@ function App() {
   const [showPopup, setShowPopup] = useState(true);
   const [grid, setGrid] = useState(game.getGrid());
   const [message, setMessage] = useState('Welcome!');
+  const [modalMessage, setModalMessage] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [scoreUpdated, setScoreUpdated] = useState(false); // State to track score updates
   const [currentMode, setCurrentMode] = useState<
@@ -71,6 +73,7 @@ function App() {
     // NOTE: reverse players to change who goes first. Also affects GameStatus, is this wanted behaviour?
     game = new Game(game.players[1], game.players[0]);
     setShowModal(false);
+    setModalMessage('');
     setScoreUpdated(false); // Set the scoreUpdated state
     nextTurn();
   };
@@ -94,8 +97,19 @@ function App() {
     setShowPopup(true);
     setShowModal(false);
     setMessage('Welcome');
+    setModalMessage('');
     setScoreUpdated(false);
     setGrid(game.getGrid());
+  };
+
+  const handleResetScoreboard = () => {
+    ScoreboardLocalStorage.clearScoreboard();
+    setModalMessage('Scoreboard has been cleared!');
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setModalMessage('');
   };
 
   const isTie = !game.winner && game.isTie();
@@ -111,8 +125,9 @@ function App() {
         winningConnection={game.winningConnection}
       />
       <Scoreboard scoreUpdated={scoreUpdated} gameMode={currentMode} />
-      <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
+      <Modal isOpen={showModal} onClose={handleCloseModal}>
         <div className="flex flex-col gap-4">
+          {modalMessage}
           {isTie ? (
             <span className="text-xl text-center font-bold">It's a tie!</span>
           ) : (
@@ -131,6 +146,12 @@ function App() {
             onClick={returnToMenu}
           >
             Return to menu
+          </button>
+          <button
+            className="px-3 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700"
+            onClick={handleResetScoreboard}
+          >
+            Clear scoreboard
           </button>
         </div>
       </Modal>
