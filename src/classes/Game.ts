@@ -1,5 +1,5 @@
 import { Board, BoardGrid, BoardLocation } from './Board';
-import { HumanPlayer, Player, PlayerSymbol } from './Player';
+import { AIPlayer, HumanPlayer, Player, PlayerSymbol } from './Player';
 import { WinChecker } from './WinChecker';
 import { ScoreboardLocalStorage } from './scoreboardLocalstorage';
 
@@ -62,8 +62,36 @@ export class Game {
 
       // Check if the game is PvP or PvE
       const isPvP = this.players[0] instanceof HumanPlayer && this.players[1] instanceof HumanPlayer;
-
+      let difficultyPvP = 0;
       if (prevPlayer instanceof HumanPlayer) {
+
+        // Human player won, check if opponent is AI
+        const opponent = this.players.find((player) => player !== prevPlayer);
+        if (opponent instanceof AIPlayer) {
+
+          if (opponent.difficulty == 1) {
+            difficultyPvP = opponent.difficulty;
+            console.log(
+              `${prevPlayer.name} won against AI with difficulty: Easy`
+            );
+            console.log(
+              `difficultyPvP: ${difficultyPvP}`
+            );
+
+          } else if (opponent.difficulty == 2) {
+            difficultyPvP = opponent.difficulty;
+            console.log(
+              `${prevPlayer.name} won against AI with difficulty: Hard`
+            );
+            console.log(`difficultyPvP: ${difficultyPvP}`);
+          } else {
+            console.log(
+              `${prevPlayer.name} won against AI with difficulty: Unknown`
+            );
+            console.log(`difficultyPvP: ${difficultyPvP}`);
+          }
+
+        }
 
         // Validate score and check if it's an "Impossible score"
         const isValid = this.validateScore(prevPlayer.symbol);
@@ -88,19 +116,20 @@ export class Game {
           const finalScore = moveMultiplier * timeMultiplier;
           console.log(`Score ${prevPlayer.symbol}:`, finalScore); // score
 
+          const isDifficulty = difficultyPvP;
+
           // Only save the score and time to localstorage if it is valid
           ScoreboardLocalStorage.saveScore(
-          prevPlayer.name,
-          this.movesCount[prevPlayer.symbol],
-          timeTaken,
-          finalScore,
-          isPvP // Pass the game mode
-        );
-
+            prevPlayer.name,
+            this.movesCount[prevPlayer.symbol],
+            timeTaken,
+            finalScore,
+            isPvP, // Pass the game mode
+            isDifficulty // Pass the difficulty
+          );
         } else {
           alert('Impossible score!'); // Show popup if the score is invalid
         }
-
       } else {
       console.log('AI won, score is not added to the scoreboard');
     }
