@@ -47,10 +47,14 @@ function App() {
     setGrid([...game.getGrid()]);
     if (game.winner) {
       setScoreUpdated(true); // Trigger scoreboard refresh
-      setShowModal(true);
+      setTimeout(() => {
+        setShowModal(true);
+      }, 1500);
     } else if (game.isTie()) {
       setMessage("It's a tie!");
-      setShowModal(true);
+      setTimeout(() => {
+        setShowModal(true);
+      }, 1500);
     }
   };
 
