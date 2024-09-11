@@ -53,7 +53,7 @@ const BoardComponent: React.FC<BoardComponentProps> = ({
           {row.map((cell, colIndex) => (
             <div
               key={colIndex}
-              className={`h-[40px] md:h-[50px] m-1 aspect-square border border-black rounded-full flex items-center justify-center ${
+              className={`h-[10vw] max-h-[70px] m-1 aspect-square border border-black rounded-full flex items-center justify-center ${
                 !isColumnFull(colIndex) && 'cursor-pointer'
               } ${isColumnFull(colIndex) ? 'cursor-not-allowed' : ''} ${
                 isWinningCell(rowIndex, colIndex)
