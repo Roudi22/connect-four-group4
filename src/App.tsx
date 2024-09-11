@@ -76,8 +76,8 @@ function App() {
   }
 
   return (
-    <>
-      <Header players={game.players.map(({ name }) => name)} />
+    <main className="flex flex-col gap-2 md:gap-6">
+      <Header playerNames={game.players.map(({ name }) => name)} />
       {showPopup && <GameModePopup onSubmit={handleGameModeSubmit} />}
       <GameStatus message={message} />
       <BoardComponent
@@ -99,7 +99,7 @@ function App() {
           </button>
         </div>
       </Modal>
-    </>
+    </main>
   );
 }
 
