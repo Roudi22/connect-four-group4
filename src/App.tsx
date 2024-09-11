@@ -1,4 +1,5 @@
-import { useState } from 'react';
+// src/App.tsx
+import React, { useState } from 'react';
 import { Game } from './classes/Game';
 import { AIPlayer, HumanPlayer, Player } from './classes/Player';
 import BoardComponent from './components/BoardComponent';
@@ -27,7 +28,7 @@ function App() {
     );
     setGrid([...game.getGrid()]);
     if (game.winner) {
-      setScoreUpdated(true); //Trigger scoreboard refresh
+      setScoreUpdated(true); // Trigger scoreboard refresh
       setShowModal(true);
     }
   };
