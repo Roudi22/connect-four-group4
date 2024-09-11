@@ -1,7 +1,7 @@
 export class ScoreboardLocalStorage {
-  private static readonly PVP_STORAGE_KEY = 'connect4PvPScoreboard';
-  private static readonly PVE_STORAGE_KEY_EASY = 'connect4PvEScoreboardEasy'; // difficulty 1
-  private static readonly PVE_STORAGE_KEY_HARD = 'connect4PvEScoreboardHARD'; // Use for hard difficulty scoreboard   // difficulty 2
+  private static readonly PVP_STORAGE_KEY = 'connect4PvPScoreboard'; // Key for Player vs Player scoreboard
+  private static readonly PVE_STORAGE_KEY_EASY = 'connect4PvEScoreboardEasy'; // Key for Player vs AI (Easy) scoreboard
+  private static readonly PVE_STORAGE_KEY_HARD = 'connect4PvEScoreboardHARD'; // Key for Player vs AI (Hard) scoreboard
 
   public static saveScore(
     winnerName: string,
@@ -9,8 +9,9 @@ export class ScoreboardLocalStorage {
     time: number,
     finalScore: number,
     isPvP: boolean, // Determine if it's PvP or PvE
-    isDifficulty: number
+    isDifficulty: number   // Difficulty select
   ): void {
+    // Determines the appropriate storage key based on game type and difficulty
     const storageKey = isPvP
       ? this.PVP_STORAGE_KEY
       : isDifficulty === 2
@@ -28,8 +29,8 @@ export class ScoreboardLocalStorage {
       (a: { score: number }, b: { score: number }) => b.score - a.score
     );
 
-    // Only save the top 5 scores
-    scoreboard = scoreboard.slice(0, 20);
+    // Only save the top 10 scores
+    scoreboard = scoreboard.slice(0, 10);
 
     // Save back to localStorage
     localStorage.setItem(storageKey, JSON.stringify(scoreboard));
@@ -43,13 +44,14 @@ export class ScoreboardLocalStorage {
     moves: number;
     time: number;
     score: number;
-  }[] {
-    const storageKey = isPvP
-      ? this.PVP_STORAGE_KEY
-      : isDifficulty === 2
-      ? this.PVE_STORAGE_KEY_HARD
-      : this.PVE_STORAGE_KEY_EASY;
+    }[] {
+      // Determine the appropriate storage key based on game type and difficulty
+      const storageKey = isPvP
+        ? this.PVP_STORAGE_KEY
+        : isDifficulty === 2
+        ? this.PVE_STORAGE_KEY_HARD
+        : this.PVE_STORAGE_KEY_EASY;
 
-    return JSON.parse(localStorage.getItem(storageKey) || '[]');
-  }
+      return JSON.parse(localStorage.getItem(storageKey) || '[]');
+    }
 }

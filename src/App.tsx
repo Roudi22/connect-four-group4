@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Game } from './classes/Game';
 import { AIPlayer, HumanPlayer, Player } from './classes/Player';
 import BoardComponent from './components/BoardComponent';
-import GameModePopupLogic from './components/GameModePopupLogic';
+import GameModePopup from './components/GameModePopup';
 import GameStatus from './components/GameStatus';
 import Header from './components/Header';
 import Scoreboard from './components/Scoreboard';
@@ -79,7 +79,7 @@ function App() {
   return (
     <>
       <Header players={game.players.map(({ name }) => name)} />
-      {showPopup && <GameModePopupLogic onSubmit={handleGameModeSubmit} />}
+      {showPopup && <GameModePopup onSubmit={handleGameModeSubmit} />}
       <GameStatus message={message} />
       <BoardComponent
         grid={grid}
