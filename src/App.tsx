@@ -1,4 +1,3 @@
-// src/App.tsx
 import { useEffect, useState } from 'react';
 import { Game } from './classes/Game';
 import { AIPlayer, HumanPlayer, Player } from './classes/Player';
@@ -99,20 +98,21 @@ function App() {
   function handleGameModeSubmit(player1: Player, player2: Player) {
     const [randomPlayer1, randomPlayer2] = randomPlayer(player1, player2);
     game = new Game(randomPlayer1, randomPlayer2);
-    // Determine if it is PvP or PvE game based on players
+
+    // Determine if it is PvP or PvE game based on players, used for scoreboard auto-select
     if (
-      randomPlayer1 instanceof HumanPlayer &&
-      randomPlayer2 instanceof HumanPlayer
+      player1 instanceof HumanPlayer &&
+      player2 instanceof HumanPlayer
     ) {
       setCurrentMode('PvP');
     } else if (
-      randomPlayer2 instanceof AIPlayer &&
-      randomPlayer2.difficulty === 1
+      player2 instanceof AIPlayer &&
+      player2.difficulty === 1
     ) {
       setCurrentMode('PvE Easy');
     } else if (
-      randomPlayer2 instanceof AIPlayer &&
-      randomPlayer2.difficulty === 2
+      player2 instanceof AIPlayer &&
+      player2.difficulty === 2
     ) {
       setCurrentMode('PvE Hard');
     }
