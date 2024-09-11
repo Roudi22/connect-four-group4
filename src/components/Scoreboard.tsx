@@ -6,6 +6,7 @@ interface ScoreboardProps {
 }
 
 const Scoreboard: React.FC<ScoreboardProps> = ({ scoreUpdated }) => {
+  // State to hold the list of scores
   const [pvpScores, setPvPScores] = useState<
     {
       winnerName: string;
@@ -31,11 +32,12 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ scoreUpdated }) => {
     }[]
   >([]);
 
-  // State to track which scoreboard is currently being displayed
+  // Track which scoreboard is currently being displayed
   const [currentScoreboard, setCurrentScoreboard] = useState<
     'PvP' | 'PvE Easy' | 'PvE Hard'
   >('PvP');
 
+  // Effect hook to fetch scores from local storage
   useEffect(() => {
     const fetchedPvPScores = ScoreboardLocalStorage.getScoreboard(true);
     const fetchedPvEScoresEasy = ScoreboardLocalStorage.getScoreboard(false, 1);
@@ -50,7 +52,8 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ scoreUpdated }) => {
     switch (currentScoreboard) {
       case 'PvP':
         return (
-          <div>
+          <section>
+            {/* PvP Scores */}
             <h3 className="text-xl md:text-2xl font-semibold pt-4 pb-2 text-center">
               Player vs Player Scores
             </h3>
@@ -103,11 +106,12 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ scoreUpdated }) => {
                 </tbody>
               </table>
             )}
-          </div>
+          </section>
         );
       case 'PvE Easy':
         return (
-          <div>
+          <section>
+            {/* PvE Easy Scores */}
             <h3 className="text-xl md:text-2xl font-semibold pt-4 pb-2 text-center">
               Player vs AI (Easy) Scores
             </h3>
@@ -160,11 +164,12 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ scoreUpdated }) => {
                 </tbody>
               </table>
             )}
-          </div>
+          </section>
         );
       case 'PvE Hard':
         return (
-          <div>
+          <section>
+            {/* PvE Hard Scores */}
             <h3 className="text-xl md:text-2xl font-semibold pt-4 pb-2 text-center">
               Player vs AI (Hard) Scores
             </h3>
@@ -217,7 +222,7 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ scoreUpdated }) => {
                 </tbody>
               </table>
             )}
-          </div>
+          </section>
         );
       default:
         return null;
