@@ -75,6 +75,8 @@ export class Game {
             // difficulty 1 = Easy
             difficultyPvP = opponent.difficulty;
             scoreMultiplier = 0.5; // Easy AI score multiplier
+
+            // Console log (Not necessary)
             console.log(
               `${prevPlayer.name} won against AI with difficulty: Easy`
             );
@@ -83,14 +85,19 @@ export class Game {
             // difficulty 2 = Hard
             difficultyPvP = opponent.difficulty;
             scoreMultiplier = 2; // Hard AI score multiplier
+
+            // Console log (Not necessary)
             console.log(
               `${prevPlayer.name} won against AI with difficulty: Hard`
             );
+            // Console log (Not necessary)
             console.log(`difficultyPvP: ${difficultyPvP}`);
           } else {
+            // Console log (Not necessary)
             console.log(
               `${prevPlayer.name} won against AI with difficulty: Unknown`
             );
+            // Console log (Not necessary)
             console.log(`difficultyPvP: ${difficultyPvP}`);
           }
         }
@@ -103,26 +110,29 @@ export class Game {
           const moveMultiplier = this.calculateMoveMultiplier(
             prevPlayer.symbol
           );
+          // Log move multiplier (Not necessary)
           console.log(
             `Move multiplier for ${prevPlayer.symbol}:`,
             moveMultiplier
-          ); // Log move multiplier
+          );
 
           // Calculate the time multiplier based on the time taken for the move
           const timeTaken = this.timeSpent[prevPlayer.symbol];
           const timeMultiplier = this.calculateTimeMultiplier(timeTaken);
+
+          // Log time multiplier (Not necessary)
           console.log(
             `Time multiplier for ${prevPlayer.symbol}:`,
             timeMultiplier
-          ); // Log time multiplier
+          );
 
           // Calculate the final score
           const baseScore = moveMultiplier * timeMultiplier;
           const finalScore = Math.round(baseScore * scoreMultiplier); // Apply the score multiplier and round to nearest whole number if needed
-
-          console.log(`Score ${prevPlayer.symbol}:`, finalScore); // score
-
           const isDifficulty = difficultyPvP;
+
+          // Console log (Not necessary)
+          console.log(`Score ${prevPlayer.symbol}:`, finalScore); // score
 
           // Only saves the score and time to localstorage if it is valid
           ScoreboardLocalStorage.saveScore(
@@ -130,8 +140,8 @@ export class Game {
             this.movesCount[prevPlayer.symbol],
             timeTaken,
             finalScore,
-            isPvP, // Pass the game mode
-            isDifficulty // Pass the difficulty mode
+            isPvP, // The game mode
+            isDifficulty // The difficulty mode
           );
         } else {
           alert('Impossible score!'); // Show popup if the score is invalid
@@ -140,8 +150,7 @@ export class Game {
         console.log('AI won, score is not added to the scoreboard');
       }
     }
-  };
-
+  }
 
   private validateScore(symbol: PlayerSymbol): boolean {
     const moves = this.movesCount[symbol];
@@ -151,7 +160,7 @@ export class Game {
     return moves >= 4 && moveMultiplier <= 17;
   }
 
-  // moves converted to multiplier (move moves = lower multiplier)
+  // moves converted to multiplier (more moves = lower multiplier)
   private calculateMoveMultiplier(symbol: PlayerSymbol): number {
     const moves = this.movesCount[symbol];
 

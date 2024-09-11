@@ -19,6 +19,9 @@ function App() {
   const [message, setMessage] = useState('Welcome!');
   const [showModal, setShowModal] = useState(false);
   const [scoreUpdated, setScoreUpdated] = useState(false); // State to track score updates
+  const [currentMode, setCurrentMode] = useState<
+    'PvP' | 'PvE Easy' | 'PvE Hard'
+  >('PvP'); // Track game mode
 
   const updateUi = () => {
     setMessage(
@@ -72,6 +75,14 @@ function App() {
   // TODO: send player names as props when called from reset game model and only create new player if name changes
   function handleGameModeSubmit(player1: Player, player2: Player) {
     game = new Game(player1, player2);
+    // Determine if it is PvP or PvE game based on players
+    if (player1 instanceof HumanPlayer && player2 instanceof HumanPlayer) {
+      setCurrentMode('PvP');
+    } else if (player2 instanceof AIPlayer && player2.difficulty === 1) {
+      setCurrentMode('PvE Easy');
+    } else if (player2 instanceof AIPlayer && player2.difficulty === 2) {
+      setCurrentMode('PvE Hard');
+    }
     setShowPopup(false);
     nextTurn();
   }
@@ -86,7 +97,7 @@ function App() {
         onCellClick={handleCellClick}
         winningConnection={game.winningConnection}
       />
-      <Scoreboard scoreUpdated={scoreUpdated} />
+      <Scoreboard scoreUpdated={scoreUpdated} gameMode={currentMode} />
       <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
         <div className="flex flex-col gap-4">
           <span className="text-xl text-center font-bold">
