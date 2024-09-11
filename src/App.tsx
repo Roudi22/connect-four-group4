@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { Game } from './classes/Game';
 import { AIPlayer, HumanPlayer, Player } from './classes/Player';
 import BoardComponent from './components/BoardComponent';
-import GameModePopup from './components/GameModePopup';
+import GameMode from './components/GameMode';
 import GameStatus from './components/GameStatus';
 import Header from './components/Header';
 import Scoreboard from './components/Scoreboard';
@@ -150,7 +150,7 @@ function App() {
       <Header playerNames={game.players.map(({ name }) => name)} />
       {/* {showPopup && <GameModePopup onSubmit={handleGameModeSubmit} />} */}
       <Modal isOpen={showPopup}>
-        <GameModePopup onSubmit={handleGameModeSubmit} />
+        <GameMode onSubmit={handleGameModeSubmit} />
       </Modal>
 
       <GameStatus message={message} />
