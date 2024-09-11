@@ -77,7 +77,7 @@ function App() {
 
   return (
     <main className="flex flex-col">
-      <Header players={game.players.map(({ name }) => name)} />
+      <Header playerNames={game.players.map(({ name }) => name)} />
       {showPopup && <GameModePopup onSubmit={handleGameModeSubmit} />}
       <GameStatus message={message} />
       <BoardComponent
