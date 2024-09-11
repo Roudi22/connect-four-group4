@@ -49,6 +49,10 @@ export class Game {
     return false;
   }
 
+  public isTie() {
+    return !this.winner && this.board.isFull();
+  }
+
   private updateWinner() {
     const grid = this.getGrid();
     const prevPlayer = this.getCurrentPlayer();

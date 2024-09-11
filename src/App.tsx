@@ -1,5 +1,5 @@
 // src/App.tsx
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Game } from './classes/Game';
 import { AIPlayer, HumanPlayer, Player } from './classes/Player';
 import BoardComponent from './components/BoardComponent';
@@ -32,6 +32,9 @@ function App() {
     setGrid([...game.getGrid()]);
     if (game.winner) {
       setScoreUpdated(true); // Trigger scoreboard refresh
+      setShowModal(true);
+    } else if (game.isTie()) {
+      setMessage("It's a tie!");
       setShowModal(true);
     }
   };
@@ -87,6 +90,8 @@ function App() {
     nextTurn();
   }
 
+  const isTie = !game.winner && game.isTie();
+
   return (
     <main className="flex flex-col gap-2 md:gap-6">
       <Header playerNames={game.players.map(({ name }) => name)} />
@@ -100,9 +105,13 @@ function App() {
       <Scoreboard scoreUpdated={scoreUpdated} gameMode={currentMode} />
       <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
         <div className="flex flex-col gap-4">
-          <span className="text-xl text-center font-bold">
-            {game.winner?.name} won!
-          </span>
+          {isTie ? (
+            <span className="text-xl text-center font-bold">It's a tie!</span>
+          ) : (
+            <span className="text-xl text-center font-bold">
+              {game.winner?.name} won!
+            </span>
+          )}
           <button
             className="px-3 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700"
             onClick={() => resetGame()}
