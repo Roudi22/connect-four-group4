@@ -76,7 +76,7 @@ function App() {
   }
 
   return (
-    <main className="flex flex-col">
+    <main className="flex flex-col gap-2 md:gap-6">
       <Header playerNames={game.players.map(({ name }) => name)} />
       {showPopup && <GameModePopup onSubmit={handleGameModeSubmit} />}
       <GameStatus message={message} />

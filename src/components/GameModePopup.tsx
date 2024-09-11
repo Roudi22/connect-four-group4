@@ -124,6 +124,7 @@ const GameModePopup = ({ onSubmit }: GameModeProps) => {
                 placeholder="Player 1 Name"
                 minLength={minNameLength}
                 value={player1Name}
+                required
                 onChange={(e) => setPlayer1Name(e.target.value)}
                 className="border p-2 rounded-md outline-none"
               />
@@ -132,6 +133,7 @@ const GameModePopup = ({ onSubmit }: GameModeProps) => {
                 placeholder="Player 2 Name"
                 minLength={minNameLength}
                 value={player2Name}
+                required
                 onChange={(e) => setPlayer2Name(e.target.value)}
                 className="border p-2 rounded-md outline-none"
               />
@@ -146,8 +148,17 @@ const GameModePopup = ({ onSubmit }: GameModeProps) => {
           }`}
         >
           {selectedMode === 'Human vs AI' && (
-            <div className="rounded-s-md p-1 md:p-8 flex flex-col items-center justify-center">
-              <div className="flex gap-2 mb-2">
+            <div className="rounded-s-md p-1 md:p-8 flex flex-col gap-4 items-center justify-center">
+              <input
+                type="text"
+                className="border p-2 rounded-md outline-none"
+                placeholder="Enter Player Name"
+                minLength={minNameLength}
+                value={player1Name}
+                required
+                onChange={(e) => setPlayer1Name(e.target.value)}
+              />
+              <div className="flex gap-2">
                 <div className="rounded-s-md p-1">
                   <input
                     type="radio"
@@ -196,14 +207,6 @@ const GameModePopup = ({ onSubmit }: GameModeProps) => {
                   </label>
                 </div>
               </div>
-              <input
-                type="text"
-                className="border p-2 rounded-md outline-none"
-                placeholder="Enter Player Name"
-                minLength={minNameLength}
-                value={player1Name}
-                onChange={(e) => setPlayer1Name(e.target.value)}
-              />
             </div>
           )}
         </div>

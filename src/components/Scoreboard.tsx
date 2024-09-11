@@ -20,7 +20,7 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ scoreUpdated }) => {
   // If there are no scores, display a message
   if (scores.length === 0) {
     return (
-      <section className="my-12 flex flex-col justify-center items-center p-4 sm:p-6 md:p-8 lg:p-12 text-center text-gray-700 text-lg sm:text-xl md:text-2xl">
+      <section className="flex flex-col justify-center items-center p-4 sm:p-6 md:p-8 lg:p-12 text-center text-gray-700 text-lg sm:text-xl md:text-2xl">
         <h2 className="text-xl md:text-2xl font-semibold mb-8 text-center">
           Top 5 Scores (Least Moves First)
         </h2>
@@ -30,8 +30,8 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ scoreUpdated }) => {
   }
 
   return (
-    <section className="my-12 flex flex-col justify-center items-center">
-      <h2 className="text-xl md:text-2xl font-semibold mb-8 text-center">
+    <section className="flex flex-col justify-center items-center">
+      <h2 className="text-xl md:text-2xl font-semibold pt-4 pb-2 text-center">
         Top 5 Scores
       </h2>
       {/* Table to display scores */}
