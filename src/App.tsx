@@ -1,5 +1,5 @@
 // src/App.tsx
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Game } from './classes/Game';
 import { AIPlayer, HumanPlayer, Player } from './classes/Player';
 import BoardComponent from './components/BoardComponent';
@@ -21,9 +21,15 @@ function App() {
   const [modalMessage, setModalMessage] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [scoreUpdated, setScoreUpdated] = useState(false); // State to track score updates
+  const [_, setScoreboard] = useState<{}>([]);
   const [currentMode, setCurrentMode] = useState<
     'PvP' | 'PvE Easy' | 'PvE Hard'
   >('PvP'); // Track game mode
+
+  const updateScoreboard = () => {
+    const updatedScoreboard = ScoreboardLocalStorage.getScoreboard(true);
+    setScoreboard(updatedScoreboard);
+  };
 
   const updateUi = () => {
     setMessage(
@@ -104,12 +110,17 @@ function App() {
 
   const handleResetScoreboard = () => {
     ScoreboardLocalStorage.clearScoreboard();
+    updateScoreboard();
     setModalMessage('Scoreboard has been cleared!');
   };
 
   const handleCloseModal = () => {
     returnToMenu();
   };
+
+  useEffect(() => {
+    updateScoreboard();
+  }, []);
 
   const isTie = !game.winner && game.isTie();
 
