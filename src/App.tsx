@@ -108,8 +108,7 @@ function App() {
   };
 
   const handleCloseModal = () => {
-    setShowModal(false);
-    setModalMessage('');
+    returnToMenu();
   };
 
   const isTie = !game.winner && game.isTie();
