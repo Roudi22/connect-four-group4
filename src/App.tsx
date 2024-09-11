@@ -90,6 +90,14 @@ function App() {
     nextTurn();
   }
 
+  const returnToMenu = () => {
+    setShowPopup(true);
+    setShowModal(false);
+    setMessage('Welcome');
+    setScoreUpdated(false);
+    setGrid(game.getGrid());
+  };
+
   const isTie = !game.winner && game.isTie();
 
   return (
@@ -117,6 +125,12 @@ function App() {
             onClick={() => resetGame()}
           >
             Reset game
+          </button>
+          <button
+            className="px-3 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700"
+            onClick={returnToMenu}
+          >
+            Return to menu
           </button>
         </div>
       </Modal>
