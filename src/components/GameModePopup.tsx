@@ -39,7 +39,7 @@ const GameModePopup = ({ onSubmit }: GameModeProps) => {
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+    <div>
       <form
         onSubmit={handleSubmit}
         className="flex gap-2 flex-col bg-white p-1 md:p-4 rounded-lg"
@@ -319,7 +319,7 @@ const GameModePopup = ({ onSubmit }: GameModeProps) => {
         <div className="flex space-x-4">
           <button
             type="submit"
-            className="rounded-md grow bg-slate-700 text-white text-xl p-2 hover:bg-slate-400"
+            className="rounded-md grow bg-gray-800 text-white text-xl p-2 hover:bg-gray-700"
           >
             Play
           </button>
