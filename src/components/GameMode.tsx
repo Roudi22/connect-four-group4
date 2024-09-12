@@ -39,6 +39,64 @@ const GameMode = ({ onSubmit }: GameModeProps) => {
     setPlayer2Name('');
   }
 
+  const renderAIOptions = (player: 1 | 2) => {
+    const getter = player === 1 ? player1Difficulty : player2Difficulty;
+    const setter = player === 1 ? setPlayer1Difficulty : setPlayer2Difficulty;
+
+    return (
+      <>
+        <label
+          className={`cursor-pointer p-2 border rounded-md ${
+            getter === 1 ? 'bg-blue-500 text-white' : 'bg-gray-200'
+          } mr-2`}
+        >
+          Trivial
+          <input
+            type="radio"
+            id={`aiVeryEasy${player}`}
+            name={`aiVeryEasy${player}`}
+            value={1}
+            checked={getter === 1}
+            onChange={(e) => setter(parseInt(e.target.value))}
+            className="hidden"
+          />
+        </label>
+        <label
+          className={`cursor-pointer p-2 border rounded-md ${
+            getter === 2 ? 'bg-blue-500 text-white' : 'bg-gray-200'
+          }`}
+        >
+          Easy
+          <input
+            type="radio"
+            id={`aiVeryEasy${player}`}
+            name={`aiVeryEasy${player}`}
+            value={2}
+            checked={getter === 2}
+            onChange={(e) => setter(parseInt(e.target.value))}
+            className="hidden"
+          />
+        </label>
+        <label
+          className={`cursor-pointer p-2 border rounded-md ${
+            getter === 3 ? 'bg-blue-500 text-white' : 'bg-gray-200'
+          }`}
+        >
+          Medium
+          <input
+            type="radio"
+            id={`aiMedium{player}`}
+            name={`aiMedium{player}`}
+            value={3}
+            checked={getter === 3}
+            onChange={(e) => setter(parseInt(e.target.value))}
+            className="hidden"
+          />
+        </label>
+      </>
+    );
+  };
+
   return (
     <div>
       <form
@@ -159,55 +217,7 @@ const GameMode = ({ onSubmit }: GameModeProps) => {
                 required
                 onChange={(e) => setPlayer1Name(e.target.value)}
               />
-              <div className="flex gap-2">
-                <div className="rounded-s-md p-1">
-                  <input
-                    type="radio"
-                    id="easy"
-                    name="gameDifficulty"
-                    value={1}
-                    checked={player2Difficulty === 1}
-                    onChange={(e) =>
-                      setPlayer2Difficulty(parseInt(e.target.value))
-                    }
-                    className="hidden"
-                  />
-                  <label
-                    htmlFor="easy"
-                    className={`cursor-pointer px-6 py-2 border rounded-md ${
-                      player2Difficulty === 1
-                        ? 'bg-blue-500 text-white'
-                        : 'bg-gray-200'
-                    }`}
-                  >
-                    Easy
-                  </label>
-                </div>
-
-                <div className="rounded-s-md p-1">
-                  <input
-                    type="radio"
-                    id="hard"
-                    name="gameDifficulty"
-                    value={2}
-                    checked={player2Difficulty === 2}
-                    onChange={(e) =>
-                      setPlayer2Difficulty(parseInt(e.target.value))
-                    }
-                    className="hidden"
-                  />
-                  <label
-                    htmlFor="hard"
-                    className={`cursor-pointer px-6 py-2 border rounded-md ${
-                      player2Difficulty === 2
-                        ? 'bg-blue-500 text-white'
-                        : 'bg-gray-200'
-                    }`}
-                  >
-                    Hard
-                  </label>
-                </div>
-              </div>
+              <div className="flex gap-2">{renderAIOptions(2)}</div>
             </div>
           )}
         </div>
@@ -224,95 +234,13 @@ const GameMode = ({ onSubmit }: GameModeProps) => {
                 <label htmlFor="" className="mr-2">
                   AI Player 1
                 </label>
-                <input
-                  type="radio"
-                  id="aiEasy1"
-                  name="gameDifficulty"
-                  value={1}
-                  checked={player1Difficulty === 1}
-                  onChange={(e) =>
-                    setPlayer1Difficulty(parseInt(e.target.value))
-                  }
-                  className="hidden"
-                />
-                <label
-                  htmlFor="aiEasy1"
-                  className={`cursor-pointer p-2 border rounded-md ${
-                    player1Difficulty === 1
-                      ? 'bg-blue-500 text-white'
-                      : 'bg-gray-200'
-                  } mr-2`}
-                >
-                  Easy
-                </label>
-                <input
-                  type="radio"
-                  id="aiHard1"
-                  name="gameDifficulty"
-                  value={2}
-                  checked={player1Difficulty === 2}
-                  onChange={(e) =>
-                    setPlayer1Difficulty(parseInt(e.target.value))
-                  }
-                  className="hidden"
-                />
-                <label
-                  htmlFor="aiHard1"
-                  className={`cursor-pointer p-2 border rounded-md ${
-                    player1Difficulty === 2
-                      ? 'bg-blue-500 text-white'
-                      : 'bg-gray-200'
-                  }`}
-                >
-                  Hard
-                </label>
+                {renderAIOptions(1)}
               </div>
               <div className="rounded-s-md p-1">
                 <label htmlFor="" className="mr-2">
                   AI Player 2
                 </label>
-                <input
-                  type="radio"
-                  id="aiEasy2"
-                  name="gameDifficulty"
-                  value={1}
-                  checked={player2Difficulty === 1}
-                  onChange={(e) =>
-                    setPlayer2Difficulty(parseInt(e.target.value))
-                  }
-                  className="hidden"
-                />
-                <label
-                  htmlFor="aiEasy2"
-                  className={`cursor-pointer p-2 border rounded-md ${
-                    player2Difficulty === 1
-                      ? 'bg-blue-500 text-white'
-                      : 'bg-gray-200'
-                  } mr-2`}
-                >
-                  Easy
-                </label>
-                <input
-                  type="radio"
-                  id="aiHard2"
-                  name="gameDifficulty"
-                  value={2}
-                  checked={player2Difficulty === 2}
-                  onChange={(e) =>
-                    setPlayer2Difficulty(parseInt(e.target.value))
-                  }
-                  className="hidden"
-                />
-                <label
-                  htmlFor="aiHard2"
-                  className={`cursor-pointer p-2 border rounded-md ${
-                    player2Difficulty === 2
-                      ? 'bg-blue-500 text-white'
-                      : 'bg-gray-200'
-                  }`}
-                >
-                  Hard
-                </label>
+                {renderAIOptions(2)}
               </div>
             </div>
           )}
