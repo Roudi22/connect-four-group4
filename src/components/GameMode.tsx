@@ -180,19 +180,21 @@ const GameMode = ({ onSubmit }: GameModeProps) => {
               <label className="block text-sm font-medium text-gray-700">
                 Uppload you image
               </label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => setImageFile(e.target.files?.[0] || null)}
-                className="mb-2"
-              />
-              <button
-                type="button"
-                onClick={handleImageUpload}
-                className="rounded-md bg-gray-800 text-white text-xl p-2 hover:bg-gray-700"
-              >
-                Upload Image
-              </button>
+              <div className="flex gap-2 items-center">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+                  className="mb-2"
+                />
+                <button
+                  type="button"
+                  onClick={handleImageUpload}
+                  className="rounded-md bg-gray-800 text-white text-xl p-2 hover:bg-gray-700"
+                >
+                  Upload
+                </button>
+              </div>
               <input
                 type="text"
                 className="border p-2 rounded-md outline-none"
