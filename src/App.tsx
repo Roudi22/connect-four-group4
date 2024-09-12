@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
+import { AIPlayer } from './classes/AIPlayer';
 import { Game } from './classes/Game';
-import { AIPlayer, HumanPlayer, Player } from './classes/Player';
+import { HumanPlayer, Player } from './classes/Player';
+import { ScoreboardLocalStorage } from './classes/scoreboardLocalstorage';
 import BoardComponent from './components/BoardComponent';
 import GameMode from './components/GameMode';
 import GameStatus from './components/GameStatus';
@@ -8,14 +10,12 @@ import Header from './components/Header';
 import Scoreboard from './components/Scoreboard';
 import Modal from './components/ui/Modal';
 import { wait } from './utils/time';
-import { ScoreboardLocalStorage } from './classes/scoreboardLocalstorage';
 
-// FIX: don't render app/board until we have selected players for the first time so we don't have to create a fake game?
-// let game = new Game(new HumanPlayer('', 'X'), new HumanPlayer('', 'O'));
 const randomPlayer = (player1: Player, player2: Player): [Player, Player] => {
   return Math.random() > 0.5 ? [player1, player2] : [player2, player1];
 };
 
+// FIX: don't render app/board until we have selected players for the first time so we don't have to create a fake game?
 let game = new Game(
   ...randomPlayer(new HumanPlayer('', 'X'), new HumanPlayer('', 'O'))
 );
@@ -67,9 +67,9 @@ function App() {
   };
 
   const playAITurn = async (player: AIPlayer) => {
-    await wait(1500);
+    await wait(1000);
     setMessage(`${player.name} is thinking...`);
-    await wait(1500);
+    await wait(1000);
     const board = game.getBoard();
     board.makeMove(player.playTurn(board), player.symbol);
     nextTurn();
@@ -100,20 +100,14 @@ function App() {
     game = new Game(randomPlayer1, randomPlayer2);
 
     // Determine if it is PvP or PvE game based on players, used for scoreboard auto-select
-    if (
-      player1 instanceof HumanPlayer &&
-      player2 instanceof HumanPlayer
-    ) {
+    if (player1 instanceof HumanPlayer && player2 instanceof HumanPlayer) {
       setCurrentMode('PvP');
     } else if (
       player2 instanceof AIPlayer &&
-      player2.difficulty === 1
+      [1, 2].includes(player2.difficulty)
     ) {
       setCurrentMode('PvE Easy');
-    } else if (
-      player2 instanceof AIPlayer &&
-      player2.difficulty === 2
-    ) {
+    } else if (player2 instanceof AIPlayer && player2.difficulty === 3) {
       setCurrentMode('PvE Hard');
     }
     setShowPopup(false);

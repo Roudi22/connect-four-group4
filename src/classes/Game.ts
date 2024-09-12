@@ -1,5 +1,6 @@
+import { AIPlayer } from './AIPlayer';
 import { Board, BoardGrid, BoardLocation } from './Board';
-import { AIPlayer, HumanPlayer, Player, PlayerSymbol } from './Player';
+import { HumanPlayer, Player, PlayerSymbol } from './Player';
 import { WinChecker } from './WinChecker';
 import { ScoreboardLocalStorage } from './scoreboardLocalstorage';
 
