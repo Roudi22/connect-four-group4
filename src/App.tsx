@@ -1,6 +1,7 @@
 import { useState } from 'react';
+import { AIPlayer } from './classes/AIPlayer';
 import { Game } from './classes/Game';
-import { AIPlayer, HumanPlayer, Player } from './classes/Player';
+import { HumanPlayer, Player } from './classes/Player';
 import BoardComponent from './components/BoardComponent';
 import GameModePopup from './components/GameModePopup';
 import GameStatus from './components/GameStatus';
@@ -42,9 +43,9 @@ function App() {
   };
 
   const playAITurn = async (player: AIPlayer) => {
-    await wait(1500);
+    await wait(1000);
     setMessage(`${player.name} is thinking...`);
-    await wait(1500);
+    await wait(1000);
     const board = game.getBoard();
     board.makeMove(player.playTurn(board), player.symbol);
     nextTurn();

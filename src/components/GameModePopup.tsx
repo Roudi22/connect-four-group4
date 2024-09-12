@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { AIPlayer, HumanPlayer, Player } from '../classes/Player';
+import { AIPlayer } from '../classes/AIPlayer';
+import { HumanPlayer, Player } from '../classes/Player';
 
 type GameModeProps = {
   onSubmit: (player1: Player, player2: Player) => void;
