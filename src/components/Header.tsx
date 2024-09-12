@@ -16,7 +16,7 @@ const Header = (props: Props) => {
             width={30}
             height={30}
             alt="Player 1 Avatar"
-            className="rounded-full border-2 border-slate-200"
+            className="rounded-full border-2 aspect-square border-slate-200"
           />
           {props.playerNames[0]}
         </div>
@@ -26,7 +26,7 @@ const Header = (props: Props) => {
             width={30}
             height={30}
             alt="Player 2 Avatar"
-            className="rounded-full border-2 border-slate-200"
+            className="rounded-full border-2 aspect-square border-slate-200"
           />
           <p>{props.playerNames[1]}</p>
         </div>
