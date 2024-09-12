@@ -13,9 +13,9 @@ app.use(express.json({ limit: '10MB' }));
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
 app.post('/api/uploadImage', (req, res) => {
-  const { encodedImage } = req.body;
+  const { player, encodedImage } = req.body;
   const binaryBuffer = Buffer.from(encodedImage.split('base64,')[1], 'base64');
-  const imagePath = path.join(__dirname, 'images', 'uploadedImage.jpg');
+  const imagePath = path.join(__dirname, 'images', `player${player}.jpg`);
 
   fs.writeFile(imagePath, binaryBuffer, (err) => {
     if (err) {

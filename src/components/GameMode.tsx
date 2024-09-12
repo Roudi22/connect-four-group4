@@ -41,7 +41,7 @@ const GameMode = ({ onSubmit }: GameModeProps) => {
   }
 
   // Function to handle image upload
-  async function handleImageUpload() {
+  async function handleImageUpload(player: number) {
     if (imageFile) {
       const reader = new FileReader();
       reader.onloadend = async () => {
@@ -52,7 +52,7 @@ const GameMode = ({ onSubmit }: GameModeProps) => {
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ encodedImage: base64Image }),
+            body: JSON.stringify({ player, encodedImage: base64Image }),
           });
 
           if (response.ok) {
@@ -248,7 +248,7 @@ const GameMode = ({ onSubmit }: GameModeProps) => {
                 />
                 <button
                   type="button"
-                  onClick={handleImageUpload}
+                  onClick={() => handleImageUpload(1)}
                   className="rounded-md bg-gray-800 text-white text-xl p-2 hover:bg-gray-700"
                 >
                   Upload
