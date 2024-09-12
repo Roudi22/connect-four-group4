@@ -6,6 +6,22 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const createIfNotExists = (filename) => {
+  const fullDirPath = path.join(__dirname, 'images');
+  if (!fs.existsSync(fullDirPath)) {
+    fs.mkdirSync(path.join(fullDirPath));
+  }
+
+  const defaultPath = path.join(__dirname, 'images', 'default.jpg');
+  const fullPath = path.join(__dirname, 'images', filename);
+  if (!fs.existsSync(fullPath)) {
+    fs.copyFileSync(defaultPath, fullPath);
+  }
+};
+
+createIfNotExists('player1.jpg');
+createIfNotExists('player2.jpg');
+
 const app = express();
 
 app.use(express.json({ limit: '10MB' }));
