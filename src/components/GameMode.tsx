@@ -206,6 +206,22 @@ const GameMode = ({ onSubmit }: GameModeProps) => {
         >
           {selectedMode === 'Human vs Human' && (
             <div className="rounded-s-md p-1 md:p-8 flex flex-col gap-1">
+              <div className="flex gap-2 items-center">
+                <input
+                  placeholder="Player 1 image"
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+                  className="mb-2"
+                />
+                <button
+                  type="button"
+                  onClick={() => handleImageUpload(1)}
+                  className="rounded-md bg-gray-800 text-white text-xl p-2 hover:bg-gray-700"
+                >
+                  Upload
+                </button>
+              </div>
               <input
                 type="text"
                 placeholder="Player 1 Name"
@@ -215,6 +231,22 @@ const GameMode = ({ onSubmit }: GameModeProps) => {
                 onChange={(e) => setPlayer1Name(e.target.value)}
                 className="border p-2 rounded-md outline-none"
               />
+              <div className="flex gap-2 items-center">
+                <input
+                  placeholder="Player 2 image"
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+                  className="mb-2"
+                />
+                <button
+                  type="button"
+                  onClick={() => handleImageUpload(2)}
+                  className="rounded-md bg-gray-800 text-white text-xl p-2 hover:bg-gray-700"
+                >
+                  Upload
+                </button>
+              </div>
               <input
                 type="text"
                 placeholder="Player 2 Name"
@@ -241,6 +273,7 @@ const GameMode = ({ onSubmit }: GameModeProps) => {
               </label>
               <div className="flex gap-2 items-center">
                 <input
+                  placeholder="Player 1 image"
                   type="file"
                   accept="image/*"
                   onChange={(e) => setImageFile(e.target.files?.[0] || null)}
