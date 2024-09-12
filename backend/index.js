@@ -3,21 +3,17 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-// Get the current directory for ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
 
-// Middleware for handling JSON bodies
 app.use(express.json({ limit: '10MB' }));
 
-// Serve images from the /images folder
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
-// Upload Image endpoint
 app.post('/api/uploadImage', (req, res) => {
-  const { encodedImage } = req.body; // Expect base64 encoded image
+  const { encodedImage } = req.body;
   const binaryBuffer = Buffer.from(encodedImage.split('base64,')[1], 'base64');
   const imagePath = path.join(__dirname, 'images', 'uploadedImage.jpg');
 
@@ -29,5 +25,4 @@ app.post('/api/uploadImage', (req, res) => {
   });
 });
 
-// Start server
 app.listen(5001, () => console.log('Backend listening on port 5001'));
