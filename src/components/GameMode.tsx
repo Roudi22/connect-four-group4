@@ -16,6 +16,7 @@ const GameMode = ({ onSubmit }: GameModeProps) => {
   const [player2Difficulty, setPlayer2Difficulty] = useState(1);
   const [player1Name, setPlayer1Name] = useState<string>('');
   const [player2Name, setPlayer2Name] = useState<string>('');
+  const [imageFile, setImageFile] = useState<File | null>(null); // Image file state
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -37,6 +38,33 @@ const GameMode = ({ onSubmit }: GameModeProps) => {
     setPlayer2Difficulty(1);
     setPlayer1Name('');
     setPlayer2Name('');
+  }
+
+  // Function to handle image upload
+  async function handleImageUpload(player: number) {
+    if (imageFile) {
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        const base64Image = reader.result;
+        if (typeof base64Image === 'string') {
+          const response = await fetch('/api/uploadImage', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ player, encodedImage: base64Image }),
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            console.log('Image uploaded successfully:', data);
+          } else {
+            console.error('Image upload failed');
+          }
+        }
+      };
+      reader.readAsDataURL(imageFile);
+    }
   }
 
   const renderAIOptions = (player: 1 | 2) => {
@@ -178,6 +206,22 @@ const GameMode = ({ onSubmit }: GameModeProps) => {
         >
           {selectedMode === 'Human vs Human' && (
             <div className="rounded-s-md p-1 md:p-8 flex flex-col gap-1">
+              <div className="flex gap-2 items-center">
+                <input
+                  placeholder="Player 1 image"
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+                  className="mb-2"
+                />
+                <button
+                  type="button"
+                  onClick={() => handleImageUpload(1)}
+                  className="rounded-md bg-gray-800 text-white text-xl p-2 hover:bg-gray-700"
+                >
+                  Upload
+                </button>
+              </div>
               <input
                 type="text"
                 placeholder="Player 1 Name"
@@ -187,6 +231,22 @@ const GameMode = ({ onSubmit }: GameModeProps) => {
                 onChange={(e) => setPlayer1Name(e.target.value)}
                 className="border p-2 rounded-md outline-none"
               />
+              <div className="flex gap-2 items-center">
+                <input
+                  placeholder="Player 2 image"
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+                  className="mb-2"
+                />
+                <button
+                  type="button"
+                  onClick={() => handleImageUpload(2)}
+                  className="rounded-md bg-gray-800 text-white text-xl p-2 hover:bg-gray-700"
+                >
+                  Upload
+                </button>
+              </div>
               <input
                 type="text"
                 placeholder="Player 2 Name"
@@ -208,6 +268,25 @@ const GameMode = ({ onSubmit }: GameModeProps) => {
         >
           {selectedMode === 'Human vs AI' && (
             <div className="rounded-s-md p-1 md:p-8 flex flex-col gap-4 items-center justify-center">
+              <label className="block text-sm font-medium text-gray-700">
+                Uppload you image
+              </label>
+              <div className="flex gap-2 items-center">
+                <input
+                  placeholder="Player 1 image"
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+                  className="mb-2"
+                />
+                <button
+                  type="button"
+                  onClick={() => handleImageUpload(1)}
+                  className="rounded-md bg-gray-800 text-white text-xl p-2 hover:bg-gray-700"
+                >
+                  Upload
+                </button>
+              </div>
               <input
                 type="text"
                 className="border p-2 rounded-md outline-none"
