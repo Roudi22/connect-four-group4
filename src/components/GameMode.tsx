@@ -48,7 +48,7 @@ const GameMode = ({ onSubmit }: GameModeProps) => {
         <label
           className={`cursor-pointer p-2 border rounded-md ${
             getter === 1 ? 'bg-blue-500 text-white' : 'bg-gray-200'
-          } mr-2`}
+          }`}
         >
           Trivial
           <input
@@ -230,16 +230,12 @@ const GameMode = ({ onSubmit }: GameModeProps) => {
         >
           {selectedMode === 'AI vs AI' && (
             <div className="rounded-s-md p-1 md:p-8 flex flex-col items-center gap-4">
-              <div className="rounded-s-md p-1">
-                <label htmlFor="" className="mr-2">
-                  AI Player 1
-                </label>
+              <div className="flex gap-2 items-center rounded-s-md p-1">
+                <span>AI Player 1</span>
                 {renderAIOptions(1)}
               </div>
-              <div className="rounded-s-md p-1">
-                <label htmlFor="" className="mr-2">
-                  AI Player 2
-                </label>
+              <div className="flex gap-2 items-center rounded-s-md p-1">
+                <span>AI Player 2</span>
                 {renderAIOptions(2)}
               </div>
             </div>
