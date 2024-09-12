@@ -149,6 +149,17 @@ const GameMode = ({ onSubmit }: GameModeProps) => {
         >
           {selectedMode === 'Human vs AI' && (
             <div className="rounded-s-md p-1 md:p-8 flex flex-col gap-4 items-center justify-center">
+              <label className="block text-sm font-medium text-gray-700">
+                Uppload you image
+              </label>
+              <div className="flex gap-2 items-center">
+                <input name="imgFile" type="file" accept=".jpg" />
+                <input
+                  type="submit"
+                  value="Upload"
+                  className="rounded-md grow bg-gray-800 text-white text-xl p-2 hover:bg-gray-700"
+                />
+              </div>
               <input
                 type="text"
                 className="border p-2 rounded-md outline-none"
