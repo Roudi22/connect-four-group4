@@ -50,7 +50,7 @@ export class WinChecker {
   }
 }
 
-const directions = [
+export const directions = [
   {
     label: 'upDown',
     forward: { x: 0, y: -1 },
