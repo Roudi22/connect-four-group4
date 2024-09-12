@@ -1,38 +1,33 @@
-import fs from 'fs';
 import express from 'express';
-import crypto from 'crypto';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-const salt = 'paraplanedasdadasjkdlasdasljasd2uas';
-
-function getHash(toEncrypt) {
-  return crypto.pbkdf2Sync(toEncrypt, salt, 1000, 64, 'sha512').toString('hex');
-}
+// Get the current directory for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 
-// Serve the image folder under /user-data
-const imageServer = express();
-imageServer.use(express.static('images'));
-app.use('/user-data', imageServer);
-
-// Parse JSON bodies
+// Middleware for handling JSON bodies
 app.use(express.json({ limit: '10MB' }));
 
-// Upload image endpoint
+// Serve images from the /images folder
+app.use('/images', express.static(path.join(__dirname, 'images')));
+
+// Upload Image endpoint
 app.post('/api/uploadImage', (req, res) => {
-  const { encoded } = req.body;
-  const binaryBuffer = Buffer.from(encoded.split('base64,')[1], 'base64');
-  const userFolder = './images/' + getHash('default');
+  const { encodedImage } = req.body; // Expect base64 encoded image
+  const binaryBuffer = Buffer.from(encodedImage.split('base64,')[1], 'base64');
+  const imagePath = path.join(__dirname, 'images', 'uploadedImage.jpg');
 
-  if (!fs.existsSync(userFolder)) {
-    fs.mkdirSync(userFolder, { recursive: true });
-  }
-
-  fs.writeFileSync(userFolder + '/userProfileImage.jpg', binaryBuffer);
-
-  res.json({ ok: true });
+  fs.writeFile(imagePath, binaryBuffer, (err) => {
+    if (err) {
+      return res.status(500).json({ error: 'Failed to upload image' });
+    }
+    res.json({ message: 'Image uploaded successfully', imagePath });
+  });
 });
 
-app.listen(5001, () =>
-  console.log('Backend listening on http://localhost:5001')
-);
+// Start server
+app.listen(5001, () => console.log('Backend listening on port 5001'));
