@@ -15,6 +15,7 @@ const GameMode = ({ onSubmit }: GameModeProps) => {
   const [player2Difficulty, setPlayer2Difficulty] = useState(1);
   const [player1Name, setPlayer1Name] = useState<string>('');
   const [player2Name, setPlayer2Name] = useState<string>('');
+  const [imageFile, setImageFile] = useState<File | null>(null); // Image file state
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -36,6 +37,33 @@ const GameMode = ({ onSubmit }: GameModeProps) => {
     setPlayer2Difficulty(1);
     setPlayer1Name('');
     setPlayer2Name('');
+  }
+
+  // Function to handle image upload
+  async function handleImageUpload() {
+    if (imageFile) {
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        const base64Image = reader.result;
+        if (typeof base64Image === 'string') {
+          const response = await fetch('/api/uploadImage', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ encodedImage: base64Image }),
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            console.log('Image uploaded successfully:', data);
+          } else {
+            console.error('Image upload failed');
+          }
+        }
+      };
+      reader.readAsDataURL(imageFile);
+    }
   }
 
   return (
