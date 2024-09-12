@@ -1,4 +1,5 @@
-import { avatar } from '../assets';
+import player1 from '../../backend/images/player1.jpg';
+import player2 from '../../backend/images/player2.jpg';
 
 type Props = {
   playerNames: string[];
@@ -11,7 +12,7 @@ const Header = (props: Props) => {
       <div className="flex-col flex gap-2 md:text-xl">
         <div className="flex items-center gap-2">
           <img
-            src={avatar}
+            src={player1}
             width={30}
             height={30}
             alt="Player 1 Avatar"
@@ -21,7 +22,7 @@ const Header = (props: Props) => {
         </div>
         <div className="flex items-center gap-2">
           <img
-            src={avatar}
+            src={player2}
             width={30}
             height={30}
             alt="Player 2 Avatar"
