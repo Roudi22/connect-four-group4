@@ -137,7 +137,7 @@ const GameMode = ({ onSubmit }: GameModeProps) => {
         className="flex gap-2 flex-col bg-white p-1 md:p-4 rounded-lg"
       >
         <h1 className="text-center p-1 md:p-4 text-xl">Choose Game Mode</h1>
-        <div className="flex justify-around">
+        <div className="flex justify-around max-sm:flex-col max-sm:items-center max-sm:gap-4">
           <div className="rounded-s-md p-1">
             <input
               type="radio"
