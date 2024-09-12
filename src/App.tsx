@@ -11,14 +11,16 @@ import Scoreboard from './components/Scoreboard';
 import Modal from './components/ui/Modal';
 import { wait } from './utils/time';
 
-const randomPlayer = (player1: Player, player2: Player): [Player, Player] => {
-  return Math.random() > 0.5 ? [player1, player2] : [player2, player1];
+const randomPlayer = (player1: Player, player2: Player) => {
+  const reverse = Math.random() > 0.5;
+  return {
+    reverse,
+    randomPlayers: reverse ? [player2, player1] : [player1, player2],
+  };
 };
 
 // FIX: don't render app/board until we have selected players for the first time so we don't have to create a fake game?
-let game = new Game(
-  ...randomPlayer(new HumanPlayer('', 'X'), new HumanPlayer('', 'O'))
-);
+let game = new Game(new HumanPlayer('', 'X'), new HumanPlayer('', 'O'));
 
 function App() {
   const [showPopup, setShowPopup] = useState(true);
@@ -28,6 +30,7 @@ function App() {
   const [showModal, setShowModal] = useState(false);
   const [scoreUpdated, setScoreUpdated] = useState(false); // State to track score updates
   const [_, setScoreboard] = useState<{}>([]);
+  const [reversed, setReversed] = useState(false);
   const [currentMode, setCurrentMode] = useState<
     'PvP' | 'PvE Easy' | 'PvE Hard'
   >('PvP'); // Track game mode
@@ -91,13 +94,15 @@ function App() {
     setShowModal(false);
     setModalMessage('');
     setScoreUpdated(false); // Set the scoreUpdated state
+    setReversed((reversed) => !reversed);
     nextTurn();
   };
 
   // TODO: send player names as props when called from reset game model and only create new player if name changes
   function handleGameModeSubmit(player1: Player, player2: Player) {
-    const [randomPlayer1, randomPlayer2] = randomPlayer(player1, player2);
-    game = new Game(randomPlayer1, randomPlayer2);
+    const { reverse, randomPlayers } = randomPlayer(player1, player2);
+    game = new Game(randomPlayers[0], randomPlayers[1]);
+    if (reverse) setReversed((reversed) => !reversed);
 
     // Determine if it is PvP or PvE game based on players, used for scoreboard auto-select
     if (player1 instanceof HumanPlayer && player2 instanceof HumanPlayer) {
@@ -141,7 +146,10 @@ function App() {
 
   return (
     <main className="flex flex-col gap-2 md:gap-6">
-      <Header playerNames={game.players.map(({ name }) => name)} />
+      <Header
+        reversed={reversed}
+        playerNames={game.players.map(({ name }) => name)}
+      />
       {/* {showPopup && <GameModePopup onSubmit={handleGameModeSubmit} />} */}
       <Modal isOpen={showPopup}>
         <GameMode onSubmit={handleGameModeSubmit} />
