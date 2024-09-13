@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 // import interface from ScoreLocalstorage.ts
-import { ScoreboardLocalStorage, Score } from '../classes/ScoreLocalStorage';
+import { ScoreboardLocalStorage, Score } from '../classes/ScoreLocalstorage';
 
 interface ScoreboardProps {
   scoreUpdated: boolean;

@@ -1,4 +1,4 @@
-import { ScoreboardLocalStorage } from './ScoreLocalStorage';
+import { ScoreboardLocalStorage } from './ScoreLocalstorage';
 import { PlayerSymbol, Player } from './Player';
 
 // Handles the tracking and validation of player scores
