@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { AIPlayer } from './classes/AIPlayer';
 import { Game } from './classes/Game';
 import { HumanPlayer, Player } from './classes/Player';
-import { ScoreboardLocalStorage } from './classes/scoreboardLocalstorage';
 import BoardComponent from './components/BoardComponent';
 import GameMode from './components/GameMode';
 import GameStatus from './components/GameStatus';
