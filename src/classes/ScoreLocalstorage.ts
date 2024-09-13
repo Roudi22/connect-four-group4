@@ -1,7 +1,15 @@
+// interface also used in Scoreboard.tsx
+export interface Score {
+  winnerName: string;
+  moves: number;
+  time: number;
+  score: number;
+}
+
 export class ScoreboardLocalStorage {
   private static readonly PVP_STORAGE_KEY = 'connect4PvPScoreboard'; // Key for Player vs Player scoreboard
   private static readonly PVE_STORAGE_KEY_EASY = 'connect4PvEScoreboardEasy'; // Key for Player vs AI (Easy) scoreboard
-  private static readonly PVE_STORAGE_KEY_HARD = 'connect4PvEScoreboardHARD'; // Key for Player vs AI (Hard) scoreboard
+  private static readonly PVE_STORAGE_KEY_HARD = 'connect4PvEScoreboardHard'; // Key for Player vs AI (Hard) scoreboard
 
   public static saveScore(
     winnerName: string,
@@ -14,12 +22,14 @@ export class ScoreboardLocalStorage {
     // Determines the appropriate storage key based on game type and difficulty
     const storageKey = isPvP
       ? this.PVP_STORAGE_KEY
-      : isDifficulty === 2
+      : isDifficulty === 3
       ? this.PVE_STORAGE_KEY_HARD
       : this.PVE_STORAGE_KEY_EASY;
 
     // Get the current scoreboard from localStorage
-    let scoreboard = JSON.parse(localStorage.getItem(storageKey) || '[]');
+    const scoreboard: Score[] = JSON.parse(
+      localStorage.getItem(storageKey) || '[]'
+    );
 
     // Add the new result with moves and time and score
     scoreboard.push({ winnerName, moves, time, score: finalScore });
@@ -30,21 +40,13 @@ export class ScoreboardLocalStorage {
     );
 
     // Only save the top 10 scores
-    scoreboard = scoreboard.slice(0, 10);
+    const topScores = scoreboard.slice(0, 10);
 
     // Save back to localStorage
-    localStorage.setItem(storageKey, JSON.stringify(scoreboard));
+    localStorage.setItem(storageKey, JSON.stringify(topScores));
   }
 
-  public static getScoreboard(
-    isPvP: boolean,
-    isDifficulty?: number
-  ): {
-    winnerName: string;
-    moves: number;
-    time: number;
-    score: number;
-  }[] {
+  public static getScoreboard(isPvP: boolean, isDifficulty?: number): Score[] {
     // Determine the appropriate storage key based on game type and difficulty
     const storageKey = isPvP
       ? this.PVP_STORAGE_KEY
@@ -52,6 +54,7 @@ export class ScoreboardLocalStorage {
       ? this.PVE_STORAGE_KEY_HARD
       : this.PVE_STORAGE_KEY_EASY;
 
+    // Return the parsed scoreboard
     return JSON.parse(localStorage.getItem(storageKey) || '[]');
   }
 

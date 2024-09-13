@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { AIPlayer } from './classes/AIPlayer';
 import { Game } from './classes/Game';
 import { HumanPlayer, Player } from './classes/Player';
-import { ScoreboardLocalStorage } from './classes/scoreboardLocalstorage';
 import BoardComponent from './components/BoardComponent';
 import GameMode from './components/GameMode';
 import GameStatus from './components/GameStatus';
@@ -29,16 +28,11 @@ function App() {
   const [modalMessage, setModalMessage] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [scoreUpdated, setScoreUpdated] = useState(false); // State to track score updates
-  const [_, setScoreboard] = useState<{}>([]);
+
   const [reversed, setReversed] = useState(false);
   const [currentMode, setCurrentMode] = useState<
     'PvP' | 'PvE Easy' | 'PvE Hard'
   >('PvP'); // Track game mode
-
-  const updateScoreboard = () => {
-    const updatedScoreboard = ScoreboardLocalStorage.getScoreboard(true);
-    setScoreboard(updatedScoreboard);
-  };
 
   const updateUi = () => {
     setMessage(
@@ -128,19 +122,9 @@ function App() {
     setGrid(game.getGrid());
   };
 
-  const handleResetScoreboard = () => {
-    ScoreboardLocalStorage.clearScoreboard();
-    updateScoreboard();
-    setModalMessage('Scoreboard has been cleared!');
-  };
-
   const handleCloseModal = () => {
     returnToMenu();
   };
-
-  useEffect(() => {
-    updateScoreboard();
-  }, []);
 
   const isTie = !game.winner && game.isTie();
 
@@ -161,7 +145,11 @@ function App() {
         onCellClick={handleCellClick}
         winningConnection={game.winningConnection}
       />
-      <Scoreboard scoreUpdated={scoreUpdated} gameMode={currentMode} />
+      <Scoreboard
+        scoreUpdated={scoreUpdated}
+        gameMode={currentMode}
+        onResetScoreboard={setModalMessage}
+      />
       <Modal isOpen={showModal} onClose={handleCloseModal}>
         <div className="flex flex-col gap-4">
           {modalMessage}
@@ -183,12 +171,6 @@ function App() {
             onClick={returnToMenu}
           >
             Return to menu
-          </button>
-          <button
-            className="px-3 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700"
-            onClick={handleResetScoreboard}
-          >
-            Clear scoreboard
           </button>
         </div>
       </Modal>
