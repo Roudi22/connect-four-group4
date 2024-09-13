@@ -141,7 +141,10 @@ const ScoreTable: React.FC<{ scores: Score[] }> = ({ scores }) => (
     <thead className="bg-gray-700 text-white">
       <tr>
         <th className="border border-gray-300 px-1 md:px-4 md:py-2">Rank</th>
-        <th className="border border-gray-300 px-1 md:px-4 md:py-2">Winner</th>
+        {/* Trims name if its too long */}
+        <th className="border border-gray-300 px-1 md:px-4 md:py-2 max-w-[100px]">
+          Winner
+        </th>
         <th className="border border-gray-300 px-1 md:px-4 md:py-2">Moves</th>
         <th className="border border-gray-300 px-1 md:px-4 md:py-2">Time</th>
         <th className="border border-gray-300 px-1 md:px-4 md:py-2">Score</th>
@@ -153,7 +156,8 @@ const ScoreTable: React.FC<{ scores: Score[] }> = ({ scores }) => (
           <td className="border border-gray-300 px-1 md:px-4 md:py-2 text-center">
             {index + 1}
           </td>
-          <td className="border border-gray-300 px-1 md:px-4 md:py-2 text-center">
+          {/* Trims name if its too long */}
+          <td className="border border-gray-300 px-1 md:px-4 md:py-2 text-center truncate max-w-[100px]">
             {score.winnerName}
           </td>
           <td className="border border-gray-300 px-1 md:px-4 md:py-2 text-center">
