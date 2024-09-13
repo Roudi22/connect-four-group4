@@ -1,7 +1,10 @@
-import { FallbackProps } from "react-error-boundary";
+import { FallbackProps } from 'react-error-boundary';
 
 // Displays an error message when something goes wrong in the app
-export default function ErrorComponent({ error, resetErrorBoundary }: FallbackProps) {
+export default function ErrorComponent({
+  error,
+  resetErrorBoundary,
+}: FallbackProps) {
   // Logs the error to the console
   console.log(error);
 

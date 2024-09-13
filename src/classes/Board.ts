@@ -8,10 +8,7 @@ export class Board {
   private grid: BoardGrid;
   public lastMove: BoardLocation;
 
-  constructor(
-    public rows: number = 6,
-    public cols: number = 7
-  ) {
+  constructor(public rows: number = 6, public cols: number = 7) {
     this.grid = Array.from({ length: rows }, () => Array(cols).fill(''));
     this.lastMove = { x: -1, y: -1 };
   }

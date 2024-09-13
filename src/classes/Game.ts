@@ -1,8 +1,8 @@
 import { AIPlayer } from './AIPlayer';
 import { Board, BoardGrid, BoardLocation } from './Board';
-import { HumanPlayer, Player, PlayerSymbol } from './Player';
+import { HumanPlayer, Player } from './Player';
 import { WinChecker } from './WinChecker';
-import { ScoreboardLocalStorage } from './ScoreLocalStorage';
+import { ScoreManager } from './ScoreManager'; // Score tracking and validation
 
 export class Game {
   private board: Board;
@@ -10,11 +10,8 @@ export class Game {
   private currentPlayerIndex: number;
   public winner: Player | null;
   public winningConnection: BoardLocation[] | null;
-  private movesCount: { [key: string]: number }; // Tracks moves for each player
-
-  // Time tracking variables
+  private scoreManager: ScoreManager; // Score tracking and validation
   private startTime: number; // The time when the current player's turn started
-  private timeSpent: { [key: string]: number }; // Tracks time spent by each player in seconds
 
   constructor(player1: Player, player2: Player) {
     this.board = new Board();
@@ -22,23 +19,22 @@ export class Game {
     this.currentPlayerIndex = 1; // NOTE: switchPlayer runs before first turn, so player with index 0 will start
     this.winner = null;
     this.winningConnection = null;
-    this.movesCount = { X: 0, O: 0 }; // Initialize move counts
+    this.scoreManager = new ScoreManager();
     this.startTime = Date.now(); // Start time for the first player
-    this.timeSpent = { X: 0, O: 0 }; // Initialize time spent
   }
 
   /** @returns is the game over (win or draw) */
   public moveToNextTurn() {
     const prevPlayer = this.getCurrentPlayer();
 
-    // Increment move count for the current player
-    // NOTE: could be moved to player class?
-    this.movesCount[prevPlayer.symbol]++;
+    // Move count for the current player
+    this.scoreManager.incrementMove(prevPlayer.symbol);
 
     // Calculate and add time spent by current player
     const currentTime = Date.now();
-    this.timeSpent[prevPlayer.symbol] += Math.floor(
-      (currentTime - this.startTime) / 1000
+    this.scoreManager.addTime(
+      prevPlayer.symbol,
+      Math.floor((currentTime - this.startTime) / 1000)
     );
     this.startTime = currentTime; // Reset start time for the next player
 
@@ -69,8 +65,9 @@ export class Game {
       const isPvP =
         this.players[0] instanceof HumanPlayer &&
         this.players[1] instanceof HumanPlayer;
-      let difficultyPvP = 0;
       let scoreMultiplier = 1; // Default score multiplier
+      let difficultyPvP = 0;
+
       if (prevPlayer instanceof HumanPlayer) {
         // Human player won, check if opponent is AI
         const opponent = this.players.find((player) => player !== prevPlayer);
@@ -80,116 +77,41 @@ export class Game {
             // difficulty 1 = Easy
             difficultyPvP = opponent.difficulty;
             scoreMultiplier = 0.5; // Easy AI score multiplier
-
-            // Console log (Not necessary)
-            console.log(
-              `${prevPlayer.name} won against AI with difficulty: Easy`
-            );
-            console.log(`difficultyPvP: ${difficultyPvP}`);
           } else if (opponent.difficulty == 3) {
             // difficulty 2 = Hard
             difficultyPvP = opponent.difficulty;
             scoreMultiplier = 2; // Hard AI score multiplier
-
-            // Console log (Not necessary)
-            console.log(
-              `${prevPlayer.name} won against AI with difficulty: Hard`
-            );
-            // Console log (Not necessary)
-            console.log(`difficultyPvP: ${difficultyPvP}`);
-          } else {
-            // Console log (Not necessary)
-            console.log(
-              `${prevPlayer.name} won against AI with difficulty: Unknown`
-            );
-            // Console log (Not necessary)
-            console.log(`difficultyPvP: ${difficultyPvP}`);
           }
         }
 
         // Validate score and check if it's an "Impossible score"
-        const isValid = this.validateScore(prevPlayer.symbol);
-
+        const isValid = this.scoreManager.validateScore(prevPlayer.symbol);
         if (isValid) {
           // If the score is valid, calculate and log the move multiplier
-          const moveMultiplier = this.calculateMoveMultiplier(
+          const moveMultiplier = this.scoreManager.calculateMoveMultiplier(
             prevPlayer.symbol
-          );
-          // Log move multiplier (Not necessary)
-          console.log(
-            `Move multiplier for ${prevPlayer.symbol}:`,
-            moveMultiplier
           );
 
           // Calculate the time multiplier based on the time taken for the move
-          const timeTaken = this.timeSpent[prevPlayer.symbol];
-          const timeMultiplier = this.calculateTimeMultiplier(timeTaken);
+          const timeTaken = this.scoreManager.getTimeSpent()[prevPlayer.symbol];
+          const timeMultiplier =
+            this.scoreManager.calculateTimeMultiplier(timeTaken);
 
-          // Log time multiplier (Not necessary)
-          console.log(
-            `Time multiplier for ${prevPlayer.symbol}:`,
-            timeMultiplier
+          // Apply the score multiplier and round to nearest whole number if needed
+          const finalScore = Math.round(
+            moveMultiplier * timeMultiplier * scoreMultiplier
           );
 
-          // Calculate the final score
-          const baseScore = moveMultiplier * timeMultiplier;
-          const finalScore = Math.round(baseScore * scoreMultiplier); // Apply the score multiplier and round to nearest whole number if needed
-          const isDifficulty = difficultyPvP;
-
-          // Console log (Not necessary)
-          console.log(`Score ${prevPlayer.symbol}:`, finalScore); // score
-
-          // Only saves the score and time to localstorage if it is valid
-          ScoreboardLocalStorage.saveScore(
-            prevPlayer.name,
-            this.movesCount[prevPlayer.symbol],
-            timeTaken,
+          this.scoreManager.saveScore(
+            prevPlayer,
             finalScore,
-            isPvP, // The game mode
-            isDifficulty // The difficulty mode
+            isPvP,
+            difficultyPvP
           );
         } else {
           alert('Impossible score!'); // Show popup if the score is invalid
         }
-      } else {
-        console.log('AI won, score is not added to the scoreboard');
       }
-    }
-  }
-
-  private validateScore(symbol: PlayerSymbol): boolean {
-    const moves = this.movesCount[symbol];
-
-    // If moves are less than 4 or the move multiplier exceeds 17, it's an impossible score
-    const moveMultiplier = this.calculateMoveMultiplier(symbol);
-    return moves >= 4 && moveMultiplier <= 17;
-  }
-
-  // moves converted to multiplier (more moves = lower multiplier)
-  private calculateMoveMultiplier(symbol: PlayerSymbol): number {
-    const moves = this.movesCount[symbol];
-
-    // Calculate multiplier based on number of moves
-    if (moves >= 4 && moves <= 21) {
-      return 21 - moves; // Example: 4 moves -> 17 multiplier, 5 moves -> 16 multiplier
-    }
-    return 0; // Invalid moves (less than 4 or over 21)
-  }
-
-  // Time converted to multiplier (more time = lower multiplier)
-  private calculateTimeMultiplier(timeTaken: number): number {
-    if (timeTaken < 10) {
-      return 6;
-    } else if (timeTaken < 20) {
-      return 5;
-    } else if (timeTaken < 30) {
-      return 4;
-    } else if (timeTaken < 40) {
-      return 3;
-    } else if (timeTaken < 50) {
-      return 2;
-    } else {
-      return 1;
     }
   }
 
@@ -199,12 +121,12 @@ export class Game {
     this.startTime = Date.now(); // Set the start time for the new player
   }
 
-  public getTimeSpent(): { [key: string]: number } {
-    return this.timeSpent;
+  public getTimeSpent() {
+    return this.scoreManager.getTimeSpent();
   }
 
-  public getMovesCount(): { [key: string]: number } {
-    return this.movesCount;
+  public getMovesCount() {
+    return this.scoreManager.getMovesCount();
   }
 
   public getBoard(): Board {
