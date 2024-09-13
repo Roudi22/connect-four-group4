@@ -11,13 +11,6 @@ import Scoreboard from './components/Scoreboard';
 import Modal from './components/ui/Modal';
 import { wait } from './utils/time';
 
-interface Score {
-  winnerName: string;
-  moves: number;
-  time: number;
-  score: number;
-}
-
 const randomPlayer = (player1: Player, player2: Player) => {
   const reverse = Math.random() > 0.5;
   return {
@@ -36,18 +29,12 @@ function App() {
   const [modalMessage, setModalMessage] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [scoreUpdated, setScoreUpdated] = useState(false); // State to track score updates
-  // const [_, setScoreboard] = useState<{}>([]);
-  // const [_, setScoreboard] = useState([] as any[]); // Changed to type assertion
-  const [_, setScoreboard] = useState<Score[]>([]);
+
   const [reversed, setReversed] = useState(false);
   const [currentMode, setCurrentMode] = useState<
     'PvP' | 'PvE Easy' | 'PvE Hard'
   >('PvP'); // Track game mode
 
-  const updateScoreboard = () => {
-    const updatedScoreboard = ScoreboardLocalStorage.getScoreboard(true);
-    setScoreboard(updatedScoreboard);
-  };
 
   const updateUi = () => {
     setMessage(
@@ -137,19 +124,9 @@ function App() {
     setGrid(game.getGrid());
   };
 
-  const handleResetScoreboard = () => {
-    ScoreboardLocalStorage.clearScoreboard();
-    updateScoreboard();
-    setModalMessage('Scoreboard has been cleared!');
-  };
-
   const handleCloseModal = () => {
     returnToMenu();
   };
-
-  useEffect(() => {
-    updateScoreboard();
-  }, []);
 
   const isTie = !game.winner && game.isTie();
 
@@ -170,7 +147,11 @@ function App() {
         onCellClick={handleCellClick}
         winningConnection={game.winningConnection}
       />
-      <Scoreboard scoreUpdated={scoreUpdated} gameMode={currentMode} />
+      <Scoreboard
+        scoreUpdated={scoreUpdated}
+        gameMode={currentMode}
+        onResetScoreboard={setModalMessage}
+      />
       <Modal isOpen={showModal} onClose={handleCloseModal}>
         <div className="flex flex-col gap-4">
           {modalMessage}
@@ -192,12 +173,6 @@ function App() {
             onClick={returnToMenu}
           >
             Return to menu
-          </button>
-          <button
-            className="px-3 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700"
-            onClick={handleResetScoreboard}
-          >
-            Clear scoreboard
           </button>
         </div>
       </Modal>

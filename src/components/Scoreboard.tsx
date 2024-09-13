@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { ScoreboardLocalStorage } from '../classes/scoreboardLocalstorage';
 
 interface ScoreboardProps {
-  scoreUpdated: boolean; // Prop to trigger updates
-  gameMode: 'PvP' | 'PvE Easy' | 'PvE Hard'; // Game mode prop
+  scoreUpdated: boolean;
+  gameMode: 'PvP' | 'PvE Easy' | 'PvE Hard';
+  onResetScoreboard: (message: string) => void;
 }
 
 interface Score {
@@ -13,7 +14,11 @@ interface Score {
   score: number;
 }
 
-const Scoreboard: React.FC<ScoreboardProps> = ({ scoreUpdated, gameMode }) => {
+const Scoreboard: React.FC<ScoreboardProps> = ({
+  scoreUpdated,
+  gameMode,
+  onResetScoreboard,
+}) => {
   // State to hold the list of scores
   const [pvpScores, setPvPScores] = useState<Score[]>([]);
   const [pveScoresEasy, setPvEScoresEasy] = useState<Score[]>([]);
@@ -22,7 +27,7 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ scoreUpdated, gameMode }) => {
   // Track which scoreboard is currently being displayed
   const [currentScoreboard, setCurrentScoreboard] = useState<
     'PvP' | 'PvE Easy' | 'PvE Hard'
-  >(gameMode); // Sets initial state to gameMode
+  >(gameMode); // Sets initial state to gameMod
 
   // Effect hook to fetch scores from local storage
   useEffect(() => {
@@ -40,182 +45,41 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ scoreUpdated, gameMode }) => {
     setCurrentScoreboard(gameMode);
   }, [gameMode]);
 
+  // Resets scoreboard with confirmation
+  const handleResetScoreboard = () => {
+    const isConfirmed = window.confirm(
+      'Are you sure you want to reset the scoreboard? This action cannot be undone.'
+    );
+
+    if (isConfirmed) {
+      ScoreboardLocalStorage.clearScoreboard();
+      onResetScoreboard('Scoreboard has been cleared!');
+      setPvPScores([]);
+      setPvEScoresEasy([]);
+      setPvEScoresHard([]);
+    }
+  };
+
   // Render the correct scoreboard based on the current state
   const renderScores = () => {
     switch (currentScoreboard) {
       case 'PvP':
-        return (
-          <section>
-            {/* PvP Scores */}
-            <h3 className="text-xl md:text-2xl font-semibold pt-4 pb-2 text-center">
-              Player vs Player Scores
-            </h3>
-            {pvpScores.length === 0 ? (
-              <p>No PvP scores yet.</p>
-            ) : (
-              <table className="table-auto border-collapse border outline outline-3 outline-gray-400 border-gray-300 rounded-lg overflow-hidden">
-                <thead>
-                  <tr>
-                    <th className="border border-gray-300 px-1 md:px-4 md:py-2">
-                      Rank
-                    </th>
-                    <th className="border border-gray-300 px-1 md:px-4 md:py-2">
-                      Winner
-                    </th>
-                    <th className="border border-gray-300 px-1 md:px-4 md:py-2">
-                      Moves
-                    </th>
-                    <th className="border border-gray-300 px-1 md:px-4 md:py-2">
-                      Time (s)
-                    </th>
-                    <th className="border border-gray-300 px-1 md:px-4 md:py-2">
-                      Score
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {pvpScores.map((score, index) => (
-                    <tr key={index}>
-                      <td className="border border-gray-300 px-1 md:px-4 md:py-2 text-center">
-                        {index + 1}
-                      </td>
-                      <td className="border border-gray-300 px-1 md:px-4 md:py-2 md:min-w-[150px]">
-                        {score.winnerName}
-                      </td>
-                      <td className="border border-gray-300 px-1 md:px-4 md:py-2 text-center">
-                        {score.moves}{' '}
-                        <span className="hidden md:inline">moves</span>
-                      </td>
-                      <td className="border border-gray-300 px-1 md:px-4 md:py-2 text-center">
-                        {score.time}{' '}
-                        <span className="hidden md:inline">seconds</span>
-                      </td>
-                      <td className="border border-gray-300 px-1 md:px-4 md:py-2 text-center">
-                        {score.score}{' '}
-                        <span className="hidden md:inline">points</span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
-          </section>
+        return pvpScores.length === 0 ? (
+          <p className="text-center text-gray-500">No PvP scores yet.</p>
+        ) : (
+          <ScoreTable scores={pvpScores} />
         );
       case 'PvE Easy':
-        return (
-          <section>
-            {/* PvE Easy Scores */}
-            <h3 className="text-xl md:text-2xl font-semibold pt-4 pb-2 text-center">
-              Player vs AI (Easy) Scores
-            </h3>
-            {pveScoresEasy.length === 0 ? (
-              <p>No PvE Easy scores yet.</p>
-            ) : (
-              <table className="table-auto border-collapse border outline outline-3 outline-gray-400 border-gray-300 rounded-lg overflow-hidden">
-                <thead>
-                  <tr>
-                    <th className="border border-gray-300 px-1 md:px-4 md:py-2">
-                      Rank
-                    </th>
-                    <th className="border border-gray-300 px-1 md:px-4 md:py-2">
-                      Winner
-                    </th>
-                    <th className="border border-gray-300 px-1 md:px-4 md:py-2">
-                      Moves
-                    </th>
-                    <th className="border border-gray-300 px-1 md:px-4 md:py-2">
-                      Time (s)
-                    </th>
-                    <th className="border border-gray-300 px-1 md:px-4 md:py-2">
-                      Score
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {pveScoresEasy.map((score, index) => (
-                    <tr key={index}>
-                      <td className="border border-gray-300 px-1 md:px-4 md:py-2 text-center">
-                        {index + 1}
-                      </td>
-                      <td className="border border-gray-300 px-1 md:px-4 md:py-2 md:min-w-[150px]">
-                        {score.winnerName}
-                      </td>
-                      <td className="border border-gray-300 px-1 md:px-4 md:py-2 text-center">
-                        {score.moves}{' '}
-                        <span className="hidden md:inline">moves</span>
-                      </td>
-                      <td className="border border-gray-300 px-1 md:px-4 md:py-2 text-center">
-                        {score.time}{' '}
-                        <span className="hidden md:inline">seconds</span>
-                      </td>
-                      <td className="border border-gray-300 px-1 md:px-4 md:py-2 text-center">
-                        {score.score}{' '}
-                        <span className="hidden md:inline">points</span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
-          </section>
+        return pveScoresEasy.length === 0 ? (
+          <p className="text-center text-gray-500">No PvE Easy scores yet.</p>
+        ) : (
+          <ScoreTable scores={pveScoresEasy} />
         );
       case 'PvE Hard':
-        return (
-          <section>
-            {/* PvE Hard Scores */}
-            <h3 className="text-xl md:text-2xl font-semibold pt-4 pb-2 text-center">
-              Player vs AI (Hard) Scores
-            </h3>
-            {pveScoresHard.length === 0 ? (
-              <p>No PvE Hard scores yet.</p>
-            ) : (
-              <table className="table-auto border-collapse border outline outline-3 outline-gray-400 border-gray-300 rounded-lg overflow-hidden">
-                <thead>
-                  <tr>
-                    <th className="border border-gray-300 px-1 md:px-4 md:py-2">
-                      Rank
-                    </th>
-                    <th className="border border-gray-300 px-1 md:px-4 md:py-2">
-                      Winner
-                    </th>
-                    <th className="border border-gray-300 px-1 md:px-4 md:py-2">
-                      Moves
-                    </th>
-                    <th className="border border-gray-300 px-1 md:px-4 md:py-2">
-                      Time (s)
-                    </th>
-                    <th className="border border-gray-300 px-1 md:px-4 md:py-2">
-                      Score
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {pveScoresHard.map((score, index) => (
-                    <tr key={index}>
-                      <td className="border border-gray-300 px-1 md:px-4 md:py-2 text-center">
-                        {index + 1}
-                      </td>
-                      <td className="border border-gray-300 px-1 md:px-4 md:py-2 md:min-w-[150px]">
-                        {score.winnerName}
-                      </td>
-                      <td className="border border-gray-300 px-1 md:px-4 md:py-2 text-center">
-                        {score.moves}{' '}
-                        <span className="hidden md:inline">moves</span>
-                      </td>
-                      <td className="border border-gray-300 px-1 md:px-4 md:py-2 text-center">
-                        {score.time}{' '}
-                        <span className="hidden md:inline">seconds</span>
-                      </td>
-                      <td className="border border-gray-300 px-1 md:px-4 md:py-2 text-center">
-                        {score.score}{' '}
-                        <span className="hidden md:inline">points</span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
-          </section>
+        return pveScoresHard.length === 0 ? (
+          <p className="text-center text-gray-500">No PvE Hard scores yet.</p>
+        ) : (
+          <ScoreTable scores={pveScoresHard} />
         );
       default:
         return null;
@@ -223,41 +87,88 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ scoreUpdated, gameMode }) => {
   };
 
   return (
-    <section className="flex flex-col justify-center items-center p-4 sm:p-6 md:p-8 lg:p-12 text-center text-gray-700 text-lg sm:text-xl md:text-2xl">
-      <h2 className="text-xl md:text-2xl font-semibold mb-8 text-center">
-        Top Scores
+    <section className="scoreboard-container p-4 bg-gray-100 rounded-md shadow-lg">
+      <h2 className="text-2xl font-bold mb-4 text-center">
+        Scoreboard (Top 10)
       </h2>
-
-      <div className="flex space-x-4 mb-8">
+      <div className="flex justify-center gap-4 mb-4">
         <button
           onClick={() => setCurrentScoreboard('PvP')}
-          className={`px-4 py-2 bg-gray-300 rounded ${
-            currentScoreboard === 'PvP' ? 'bg-blue-500 text-white' : ''
+          className={`px-4 py-2 rounded-md ${
+            currentScoreboard === 'PvP'
+              ? 'bg-blue-500 text-white'
+              : 'bg-gray-300 hover:bg-gray-400'
           }`}
         >
-          PvP Scores
+          Human vs Human
         </button>
         <button
           onClick={() => setCurrentScoreboard('PvE Easy')}
-          className={`px-4 py-2 bg-gray-300 rounded ${
-            currentScoreboard === 'PvE Easy' ? 'bg-blue-500 text-white' : ''
+          className={`px-4 py-2 rounded-md ${
+            currentScoreboard === 'PvE Easy'
+              ? 'bg-blue-500 text-white'
+              : 'bg-gray-300 hover:bg-gray-400'
           }`}
         >
-          PvE Easy Scores
+          Human vs AI Easy
         </button>
         <button
           onClick={() => setCurrentScoreboard('PvE Hard')}
-          className={`px-4 py-2 bg-gray-300 rounded ${
-            currentScoreboard === 'PvE Hard' ? 'bg-blue-500 text-white' : ''
+          className={`px-4 py-2 rounded-md ${
+            currentScoreboard === 'PvE Hard'
+              ? 'bg-blue-500 text-white'
+              : 'bg-gray-300 hover:bg-gray-400'
           }`}
         >
-          PvE Hard Scores
+          Human vs AI Hard
         </button>
       </div>
-
-      {renderScores()}
+      <div className="scores-table-container mb-4">{renderScores()}</div>
+      <div className="flex justify-center">
+        <button
+          onClick={handleResetScoreboard}
+          className="px-6 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+        >
+          Reset Scoreboard
+        </button>
+      </div>
     </section>
   );
 };
+
+const ScoreTable: React.FC<{ scores: Score[] }> = ({ scores }) => (
+  <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+    <thead className="bg-gray-700 text-white">
+      <tr>
+        <th className="border border-gray-300 px-1 md:px-4 md:py-2">Rank</th>
+        <th className="border border-gray-300 px-1 md:px-4 md:py-2">Winner</th>
+        <th className="border border-gray-300 px-1 md:px-4 md:py-2">Moves</th>
+        <th className="border border-gray-300 px-1 md:px-4 md:py-2">Time</th>
+        <th className="border border-gray-300 px-1 md:px-4 md:py-2">Score</th>
+      </tr>
+    </thead>
+    <tbody>
+      {scores.map((score, index) => (
+        <tr key={index} className="even:bg-gray-100">
+          <td className="border border-gray-300 px-1 md:px-4 md:py-2 text-center">
+            {index + 1}
+          </td>
+          <td className="border border-gray-300 px-1 md:px-4 md:py-2 text-center">
+            {score.winnerName}
+          </td>
+          <td className="border border-gray-300 px-1 md:px-4 md:py-2 text-center">
+            {score.moves}
+          </td>
+          <td className="border border-gray-300 px-1 md:px-4 md:py-2 text-center">
+            {score.time}
+          </td>
+          <td className="border border-gray-300 px-1 md:px-4 md:py-2 text-center">
+            {score.score}
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+);
 
 export default Scoreboard;
