@@ -2,7 +2,7 @@ import { AIPlayer } from './AIPlayer';
 import { Board, BoardGrid, BoardLocation } from './Board';
 import { HumanPlayer, Player, PlayerSymbol } from './Player';
 import { WinChecker } from './WinChecker';
-import { ScoreboardLocalStorage } from './ScoreLocalstorage';
+import { ScoreboardLocalStorage } from './ScoreLocalStorage';
 
 export class Game {
   private board: Board;

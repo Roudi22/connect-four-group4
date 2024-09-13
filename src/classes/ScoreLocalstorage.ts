@@ -1,3 +1,4 @@
+// interface also used in Scoreboard.tsx
 export interface Score {
   winnerName: string;
   moves: number;
