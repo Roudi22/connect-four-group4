@@ -1,17 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { ScoreboardLocalStorage } from '../classes/ScoreLocalstorage';
+import { Score } from '../classes/ScoreLocalstorage';
 
 interface ScoreboardProps {
   scoreUpdated: boolean;
   gameMode: 'PvP' | 'PvE Easy' | 'PvE Hard';
   onResetScoreboard: (message: string) => void;
-}
-
-interface Score {
-  winnerName: string;
-  moves: number;
-  time: number;
-  score: number;
 }
 
 const Scoreboard: React.FC<ScoreboardProps> = ({

@@ -1,4 +1,4 @@
-interface Score {
+export interface Score {
   winnerName: string;
   moves: number;
   time: number;
