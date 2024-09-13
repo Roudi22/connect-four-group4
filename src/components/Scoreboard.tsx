@@ -6,32 +6,18 @@ interface ScoreboardProps {
   gameMode: 'PvP' | 'PvE Easy' | 'PvE Hard'; // Game mode prop
 }
 
+interface Score {
+  winnerName: string;
+  moves: number;
+  time: number;
+  score: number;
+}
+
 const Scoreboard: React.FC<ScoreboardProps> = ({ scoreUpdated, gameMode }) => {
   // State to hold the list of scores
-  const [pvpScores, setPvPScores] = useState<
-    {
-      winnerName: string;
-      moves: number;
-      time: number;
-      score: number;
-    }[]
-  >([]);
-  const [pveScoresEasy, setPvEScoresEasy] = useState<
-    {
-      winnerName: string;
-      moves: number;
-      time: number;
-      score: number;
-    }[]
-  >([]);
-  const [pveScoresHard, setPvEScoresHard] = useState<
-    {
-      winnerName: string;
-      moves: number;
-      time: number;
-      score: number;
-    }[]
-  >([]);
+  const [pvpScores, setPvPScores] = useState<Score[]>([]);
+  const [pveScoresEasy, setPvEScoresEasy] = useState<Score[]>([]);
+  const [pveScoresHard, setPvEScoresHard] = useState<Score[]>([]);
 
   // Track which scoreboard is currently being displayed
   const [currentScoreboard, setCurrentScoreboard] = useState<
@@ -43,6 +29,7 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ scoreUpdated, gameMode }) => {
     const fetchedPvPScores = ScoreboardLocalStorage.getScoreboard(true);
     const fetchedPvEScoresEasy = ScoreboardLocalStorage.getScoreboard(false, 1);
     const fetchedPvEScoresHard = ScoreboardLocalStorage.getScoreboard(false, 2);
+
     setPvPScores(fetchedPvPScores);
     setPvEScoresEasy(fetchedPvEScoresEasy);
     setPvEScoresHard(fetchedPvEScoresHard);

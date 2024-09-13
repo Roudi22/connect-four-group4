@@ -11,6 +11,13 @@ import Scoreboard from './components/Scoreboard';
 import Modal from './components/ui/Modal';
 import { wait } from './utils/time';
 
+interface Score {
+  winnerName: string;
+  moves: number;
+  time: number;
+  score: number;
+}
+
 const randomPlayer = (player1: Player, player2: Player) => {
   const reverse = Math.random() > 0.5;
   return {
@@ -29,7 +36,9 @@ function App() {
   const [modalMessage, setModalMessage] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [scoreUpdated, setScoreUpdated] = useState(false); // State to track score updates
-  const [_, setScoreboard] = useState<{}>([]);
+  // const [_, setScoreboard] = useState<{}>([]);
+  // const [_, setScoreboard] = useState([] as any[]); // Changed to type assertion
+  const [_, setScoreboard] = useState<Score[]>([]);
   const [reversed, setReversed] = useState(false);
   const [currentMode, setCurrentMode] = useState<
     'PvP' | 'PvE Easy' | 'PvE Hard'
