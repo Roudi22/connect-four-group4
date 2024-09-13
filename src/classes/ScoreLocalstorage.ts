@@ -8,7 +8,7 @@ interface Score {
 export class ScoreboardLocalStorage {
   private static readonly PVP_STORAGE_KEY = 'connect4PvPScoreboard'; // Key for Player vs Player scoreboard
   private static readonly PVE_STORAGE_KEY_EASY = 'connect4PvEScoreboardEasy'; // Key for Player vs AI (Easy) scoreboard
-  private static readonly PVE_STORAGE_KEY_HARD = 'connect4PvEScoreboardHARD'; // Key for Player vs AI (Hard) scoreboard
+  private static readonly PVE_STORAGE_KEY_HARD = 'connect4PvEScoreboardHard'; // Key for Player vs AI (Hard) scoreboard
 
   public static saveScore(
     winnerName: string,
@@ -21,7 +21,7 @@ export class ScoreboardLocalStorage {
     // Determines the appropriate storage key based on game type and difficulty
     const storageKey = isPvP
       ? this.PVP_STORAGE_KEY
-      : isDifficulty === 2
+      : isDifficulty === 3
       ? this.PVE_STORAGE_KEY_HARD
       : this.PVE_STORAGE_KEY_EASY;
 

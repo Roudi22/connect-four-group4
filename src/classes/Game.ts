@@ -2,7 +2,7 @@ import { AIPlayer } from './AIPlayer';
 import { Board, BoardGrid, BoardLocation } from './Board';
 import { HumanPlayer, Player, PlayerSymbol } from './Player';
 import { WinChecker } from './WinChecker';
-import { ScoreboardLocalStorage } from './scoreboardLocalstorage';
+import { ScoreboardLocalStorage } from './ScoreLocalstorage';
 
 export class Game {
   private board: Board;
@@ -86,7 +86,7 @@ export class Game {
               `${prevPlayer.name} won against AI with difficulty: Easy`
             );
             console.log(`difficultyPvP: ${difficultyPvP}`);
-          } else if (opponent.difficulty == 2) {
+          } else if (opponent.difficulty == 3) {
             // difficulty 2 = Hard
             difficultyPvP = opponent.difficulty;
             scoreMultiplier = 2; // Hard AI score multiplier

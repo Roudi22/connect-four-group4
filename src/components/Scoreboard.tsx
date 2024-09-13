@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ScoreboardLocalStorage } from '../classes/scoreboardLocalstorage';
+import { ScoreboardLocalStorage } from '../classes/ScoreLocalstorage';
 
 interface ScoreboardProps {
   scoreUpdated: boolean;

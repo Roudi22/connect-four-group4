@@ -102,9 +102,7 @@ function App() {
     // Determine if it is PvP or PvE game based on players, used for scoreboard auto-select
     if (player1 instanceof HumanPlayer && player2 instanceof HumanPlayer) {
       setCurrentMode('PvP');
-    } else if (
-      player2 instanceof AIPlayer &&
-      [1, 2].includes(player2.difficulty)
+    } else if ( player2 instanceof AIPlayer && [1, 2].includes(player2.difficulty)
     ) {
       setCurrentMode('PvE Easy');
     } else if (player2 instanceof AIPlayer && player2.difficulty === 3) {
