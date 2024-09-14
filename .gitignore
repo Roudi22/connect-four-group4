@@ -2,6 +2,7 @@ backend/images/player1.jpg
 backend/images/player2.jpg
 backend/*.js
 backend/*.map
+backend/db.sqlite
 
 # Logs
 logs
