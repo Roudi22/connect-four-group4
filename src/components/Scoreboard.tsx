@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 // import interface from ScoreLocalstorage.ts
 import { ScoreboardLocalStorage, Score } from '../classes/ScoreLocalstorage';
+import { truncateString } from '../utils/functions';
 
 type GameMode = 'PvP' | 'PvE Easy' | 'PvE Hard';
 
@@ -155,7 +156,7 @@ const ScoreTable: React.FC<{ scores: Score[] }> = ({ scores }) => (
           </td>
           {/* Trims name if its too long */}
           <td className="border border-gray-300 px-1 md:px-4 md:py-2 text-center truncate max-w-[100px]">
-            {score.winnerName}
+            {truncateString(score.winnerName, 12)}
           </td>
           <td className="border border-gray-300 px-1 md:px-4 md:py-2 text-center">
             {score.moves}
