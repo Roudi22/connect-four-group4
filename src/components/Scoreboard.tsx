@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 // import interface from ScoreLocalstorage.ts
 import { ScoreboardLocalStorage, Score } from '../classes/ScoreLocalstorage';
 
+type GameMode = 'PvP' | 'PvE Easy' | 'PvE Hard';
+
 interface ScoreboardProps {
   scoreUpdated: boolean;
-  gameMode: 'PvP' | 'PvE Easy' | 'PvE Hard';
+  gameMode: GameMode;
   onResetScoreboard: (message: string) => void;
 }
 
@@ -19,9 +21,8 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
   const [pveScoresHard, setPvEScoresHard] = useState<Score[]>([]);
 
   // Track which scoreboard is currently being displayed
-  const [currentScoreboard, setCurrentScoreboard] = useState<
-    'PvP' | 'PvE Easy' | 'PvE Hard'
-  >(gameMode); // Sets initial state to gameMod
+  const [currentScoreboard, setCurrentScoreboard] =
+    useState<GameMode>(gameMode); // Sets initial state to gameMod
 
   // Effect hook to fetch scores from local storage
   useEffect(() => {
