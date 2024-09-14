@@ -131,50 +131,52 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
 };
 
 const ScoreTable: React.FC<{ scores: Score[] }> = ({ scores }) => (
-  <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden outline outline-gray-300">
-    <thead className="bg-gray-700 text-white ">
-      <tr>
-        <th className="border border-gray-300 px-1 md:px-4 py-1 md:py-2">
-          Rank
-        </th>
-        {/* Trims name if its too long */}
-        <th className="border border-gray-300 px-1 md:px-4 py-1 md:py-2 max-w-[100px]">
-          Winner
-        </th>
-        <th className="border border-gray-300 px-1 md:px-4 py-1 md:py-2">
-          Moves
-        </th>
-        <th className="border border-gray-300 px-1 md:px-4 py-1 md:py-2">
-          Time
-        </th>
-        <th className="border border-gray-300 px-1 md:px-4 py-1 md:py-2">
-          Score
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      {scores.map((score, index) => (
-        <tr key={index} className="even:bg-gray-100">
-          <td className="border border-gray-300 px-1 md:px-4 md:py-2 text-center">
-            {index + 1}
-          </td>
+  <div className="max-w-screen-lg mx-auto lg:p-4">
+    <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden outline outline-gray-300">
+      <thead className="bg-gray-700 text-white ">
+        <tr>
+          <th className="border border-gray-300 px-1 md:px-4 py-1 md:py-2">
+            Rank
+          </th>
           {/* Trims name if its too long */}
-          <td className="border border-gray-300 px-1 md:px-4 md:py-2 text-center truncate max-w-[100px]">
-            {score.winnerName}
-          </td>
-          <td className="border border-gray-300 px-1 md:px-4 md:py-2 text-center">
-            {score.moves}
-          </td>
-          <td className="border border-gray-300 px-1 md:px-4 md:py-2 text-center">
-            {score.time}
-          </td>
-          <td className="border border-gray-300 px-1 md:px-4 md:py-2 text-center">
-            {score.score}
-          </td>
+          <th className="border border-gray-300 px-1 md:px-4 py-1 md:py-2 max-w-[100px]">
+            Winner
+          </th>
+          <th className="border border-gray-300 px-1 md:px-4 py-1 md:py-2">
+            Moves
+          </th>
+          <th className="border border-gray-300 px-1 md:px-4 py-1 md:py-2">
+            Time
+          </th>
+          <th className="border border-gray-300 px-1 md:px-4 py-1 md:py-2">
+            Score
+          </th>
         </tr>
-      ))}
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        {scores.map((score, index) => (
+          <tr key={index} className="even:bg-gray-100">
+            <td className="border border-gray-300 px-1 md:px-4 md:py-2 text-center">
+              {index + 1}
+            </td>
+            {/* Trims name if its too long */}
+            <td className="border border-gray-300 px-1 md:px-4 md:py-2 text-center truncate max-w-[100px]">
+              {score.winnerName}
+            </td>
+            <td className="border border-gray-300 px-1 md:px-4 md:py-2 text-center">
+              {score.moves}
+            </td>
+            <td className="border border-gray-300 px-1 md:px-4 md:py-2 text-center">
+              {score.time}
+            </td>
+            <td className="border border-gray-300 px-1 md:px-4 md:py-2 text-center">
+              {score.score}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
 );
 
 export default Scoreboard;
