@@ -2,6 +2,7 @@ import express from 'express';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import userRouter from './user.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -40,5 +41,7 @@ app.post('/api/uploadImage', (req, res) => {
     return res.json({ message: 'Image uploaded successfully', imagePath });
   });
 });
+
+app.use('/api/user', userRouter);
 
 app.listen(5001, () => console.log('Backend listening on port 5001'));
