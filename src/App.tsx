@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { AIPlayer } from './classes/AIPlayer';
 import { Game } from './classes/Game';
 import { HumanPlayer, Player } from './classes/Player';
