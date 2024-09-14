@@ -9,6 +9,7 @@ import Header from './components/Header';
 import Scoreboard from './components/Scoreboard';
 import Modal from './components/ui/Modal';
 import { wait } from './utils/time';
+import { truncateString } from './utils/functions';
 
 const randomPlayer = (player1: Player, player2: Player) => {
   const reverse = Math.random() > 0.5;
@@ -37,8 +38,8 @@ function App() {
   const updateUi = () => {
     setMessage(
       game.winner
-        ? `${game.winner.name} wins!`
-        : `${game.getCurrentPlayer().name}'s turn`
+        ? `${truncateString(game.winner.name, 12)} wins!`
+        : `${truncateString(game.getCurrentPlayer().name, 12)}'s turn`
     );
     setGrid([...game.getGrid()]);
     if (game.winner) {
