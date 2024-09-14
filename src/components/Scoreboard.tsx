@@ -2,26 +2,22 @@ import React, { useEffect, useState } from 'react';
 // import interface from ScoreLocalstorage.ts
 import { ScoreboardLocalStorage, Score } from '../classes/ScoreLocalstorage';
 
+type GameMode = 'PvP' | 'PvE Easy' | 'PvE Hard';
+
 interface ScoreboardProps {
   scoreUpdated: boolean;
-  gameMode: 'PvP' | 'PvE Easy' | 'PvE Hard';
-  onResetScoreboard: (message: string) => void;
+  gameMode: GameMode;
 }
 
-const Scoreboard: React.FC<ScoreboardProps> = ({
-  scoreUpdated,
-  gameMode,
-  onResetScoreboard,
-}) => {
+const Scoreboard: React.FC<ScoreboardProps> = ({ scoreUpdated, gameMode }) => {
   // State to hold the list of scores
   const [pvpScores, setPvPScores] = useState<Score[]>([]);
   const [pveScoresEasy, setPvEScoresEasy] = useState<Score[]>([]);
   const [pveScoresHard, setPvEScoresHard] = useState<Score[]>([]);
 
   // Track which scoreboard is currently being displayed
-  const [currentScoreboard, setCurrentScoreboard] = useState<
-    'PvP' | 'PvE Easy' | 'PvE Hard'
-  >(gameMode); // Sets initial state to gameMod
+  const [currentScoreboard, setCurrentScoreboard] =
+    useState<GameMode>(gameMode); // Sets initial state to gameMod
 
   // Effect hook to fetch scores from local storage
   useEffect(() => {
@@ -47,7 +43,6 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
 
     if (isConfirmed) {
       ScoreboardLocalStorage.clearScoreboard();
-      onResetScoreboard('Scoreboard has been cleared!');
       setPvPScores([]);
       setPvEScoresEasy([]);
       setPvEScoresHard([]);
