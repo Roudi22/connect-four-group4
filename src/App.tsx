@@ -145,14 +145,9 @@ function App() {
         onCellClick={handleCellClick}
         winningConnection={game.winningConnection}
       />
-      <Scoreboard
-        scoreUpdated={scoreUpdated}
-        gameMode={currentMode}
-        onResetScoreboard={setModalMessage}
-      />
+      <Scoreboard scoreUpdated={scoreUpdated} gameMode={currentMode} />
       <Modal isOpen={showModal} onClose={handleCloseModal}>
         <div className="flex flex-col gap-4">
-          {modalMessage}
           {isTie ? (
             <span className="text-xl text-center font-bold">It's a tie!</span>
           ) : (

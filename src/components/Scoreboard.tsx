@@ -7,14 +7,9 @@ type GameMode = 'PvP' | 'PvE Easy' | 'PvE Hard';
 interface ScoreboardProps {
   scoreUpdated: boolean;
   gameMode: GameMode;
-  onResetScoreboard: (message: string) => void;
 }
 
-const Scoreboard: React.FC<ScoreboardProps> = ({
-  scoreUpdated,
-  gameMode,
-  onResetScoreboard,
-}) => {
+const Scoreboard: React.FC<ScoreboardProps> = ({ scoreUpdated, gameMode }) => {
   // State to hold the list of scores
   const [pvpScores, setPvPScores] = useState<Score[]>([]);
   const [pveScoresEasy, setPvEScoresEasy] = useState<Score[]>([]);
@@ -48,7 +43,6 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
 
     if (isConfirmed) {
       ScoreboardLocalStorage.clearScoreboard();
-      onResetScoreboard('Scoreboard has been cleared!');
       setPvPScores([]);
       setPvEScoresEasy([]);
       setPvEScoresHard([]);
