@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const createIfNotExists = (filename) => {
+const createIfNotExists = (filename: string) => {
   const fullDirPath = path.join(__dirname, 'images');
   if (!fs.existsSync(fullDirPath)) {
     fs.mkdirSync(path.join(fullDirPath));
@@ -37,7 +37,7 @@ app.post('/api/uploadImage', (req, res) => {
     if (err) {
       return res.status(500).json({ error: 'Failed to upload image' });
     }
-    res.json({ message: 'Image uploaded successfully', imagePath });
+    return res.json({ message: 'Image uploaded successfully', imagePath });
   });
 });
 

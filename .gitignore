@@ -1,5 +1,8 @@
 backend/images/player1.jpg
 backend/images/player2.jpg
+backend/*.js
+backend/*.map
+
 # Logs
 logs
 *.log
