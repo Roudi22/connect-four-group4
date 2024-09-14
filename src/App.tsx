@@ -156,9 +156,13 @@ function App() {
           {isTie ? (
             <span className="text-xl text-center font-bold">It's a tie!</span>
           ) : (
-            <span className="text-xl text-center font-bold">
-              {game.winner?.name} won!
-            </span>
+            // Trims name if its too long
+            <div className="flex items-center justify-center text-xl font-bold">
+              <span className="truncate max-w-[150px]">
+                {game.winner?.name}
+              </span>
+              <span className="ml-1">won!</span>
+            </div>
           )}
           <button
             className="px-3 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700"

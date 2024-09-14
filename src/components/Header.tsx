@@ -19,7 +19,8 @@ const Header = (props: Props) => {
             alt="Player 1 Avatar"
             className="rounded-full border-2 aspect-square border-slate-200"
           />
-          {props.playerNames[0]}
+          {/* Trims name if its too long */}
+          <span className="truncate max-w-[200px]">{props.playerNames[0]}</span>
         </div>
         <div className="flex items-center gap-2">
           <img
@@ -29,7 +30,8 @@ const Header = (props: Props) => {
             alt="Player 2 Avatar"
             className="rounded-full border-2 aspect-square border-slate-200"
           />
-          <p>{props.playerNames[1]}</p>
+          {/* Trims name if its too long */}
+          <span className="truncate max-w-[200px]">{props.playerNames[1]}</span>
         </div>
       </div>
     </div>
