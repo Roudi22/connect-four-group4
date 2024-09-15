@@ -127,6 +127,7 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ scoreUpdated, gameMode }) => {
 };
 
 const ScoreTable: React.FC<{ scores: Score[] }> = ({ scores }) => (
+  // Scoreboard width limit on larger screens
   <div className="max-w-screen-lg mx-auto lg:p-4">
     <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden outline outline-gray-300">
       <thead className="bg-gray-700 text-white ">
