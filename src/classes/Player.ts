@@ -9,22 +9,31 @@ export type Player = HumanPlayer | AIPlayer;
 export abstract class PlayerBaseClass {
   public name: string;
   public symbol: PlayerSymbol;
-  public image?: string;
 
-  constructor(name: string, symbol: PlayerSymbol, image?: string) {
+  constructor(name: string, symbol: PlayerSymbol) {
     this.name = name;
     this.symbol = symbol;
-    this.image = image;
   }
 }
 
 export class HumanPlayer extends PlayerBaseClass {
-  constructor(name: string, symbol: PlayerSymbol, image?: string) {
-    super(name, symbol, image);
+  constructor(name: string, symbol: PlayerSymbol) {
+    super(name, symbol);
   }
 
   public playTurn(board: Board, col: number) {
     const lastMove = board.makeMove(col, this.symbol);
     return lastMove.x >= 0 && lastMove.y >= 0;
+  }
+}
+
+// glorious extends ladder! :D
+// would have been easier with three types/interfaces instaed of classes
+export class SignedInPlayer extends HumanPlayer {
+  public imageUrl;
+
+  constructor(name: string, symbol: PlayerSymbol, imageUrl: string) {
+    super(name, symbol);
+    this.imageUrl = imageUrl;
   }
 }

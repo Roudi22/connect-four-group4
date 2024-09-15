@@ -1,21 +1,23 @@
 import { useState } from 'react';
 import { AIPlayer } from '../classes/AIPlayer';
-import { HumanPlayer, Player } from '../classes/Player';
+import { HumanPlayer, Player, SignedInPlayer } from '../classes/Player';
 
 type GameModeProps = {
   onSubmit: (player1: Player, player2: Player) => void;
+  signedIn1: SignedInPlayer | null;
+  signedIn2: SignedInPlayer | null;
 };
 
 type GameMode = 'Human vs Human' | 'Human vs AI' | 'AI vs AI';
 
 const minNameLength = 3;
 
-const GameMode = ({ onSubmit }: GameModeProps) => {
+const GameMode = ({ onSubmit, signedIn1, signedIn2 }: GameModeProps) => {
   const [selectedMode, setSelectedMode] = useState<GameMode>('Human vs Human');
   const [player1Difficulty, setPlayer1Difficulty] = useState(1);
   const [player2Difficulty, setPlayer2Difficulty] = useState(1);
-  const [player1Name, setPlayer1Name] = useState<string>('');
-  const [player2Name, setPlayer2Name] = useState<string>('');
+  const [player1Name, setPlayer1Name] = useState<string>(signedIn1?.name || '');
+  const [player2Name, setPlayer2Name] = useState<string>(signedIn2?.name || '');
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -23,10 +25,10 @@ const GameMode = ({ onSubmit }: GameModeProps) => {
     const player1 =
       selectedMode === 'AI vs AI'
         ? new AIPlayer(player1Difficulty, 'X')
-        : new HumanPlayer(player1Name.trim(), 'X');
+        : signedIn1 || new HumanPlayer(player1Name.trim(), 'X');
     const player2 =
       selectedMode === 'Human vs Human'
-        ? new HumanPlayer(player2Name.trim(), 'O')
+        ? signedIn2 || new HumanPlayer(player2Name.trim(), 'O')
         : new AIPlayer(player2Difficulty, 'O');
 
     onSubmit(player1, player2);
@@ -216,6 +218,7 @@ const GameMode = ({ onSubmit }: GameModeProps) => {
                 placeholder="Player 1 Name"
                 minLength={minNameLength}
                 value={player1Name}
+                disabled={signedIn1 !== null}
                 required
                 onChange={(e) => setPlayer1Name(e.target.value)}
                 className="border p-2 rounded-md outline-none"
@@ -235,6 +238,7 @@ const GameMode = ({ onSubmit }: GameModeProps) => {
                 minLength={minNameLength}
                 value={player2Name}
                 required
+                disabled={signedIn2 !== null}
                 onChange={(e) => setPlayer2Name(e.target.value)}
                 className="border p-2 rounded-md outline-none"
               />
@@ -266,6 +270,7 @@ const GameMode = ({ onSubmit }: GameModeProps) => {
                 minLength={minNameLength}
                 value={player1Name}
                 required
+                disabled={signedIn1 !== null}
                 onChange={(e) => setPlayer1Name(e.target.value)}
               />
               <label className="block p-1 text-sm font-medium text-gray-900">

@@ -1,34 +1,29 @@
 import { useState } from 'react';
 import { AIPlayer } from './classes/AIPlayer';
 import { Game } from './classes/Game';
-import { HumanPlayer, Player } from './classes/Player';
+import { HumanPlayer, Player, SignedInPlayer } from './classes/Player';
 import BoardComponent from './components/BoardComponent';
 import GameMode from './components/GameMode';
 import GameStatus from './components/GameStatus';
 import Header from './components/Header';
 import Scoreboard from './components/Scoreboard';
 import Modal from './components/ui/Modal';
-import { wait } from './utils/time';
 import { truncateString } from './utils/functions';
-
-import player1Image from '../backend/images/player1.jpg';
-import player2Image from '../backend/images/player2.jpg';
+import { wait } from './utils/time';
 
 const randomPlayer = (player1: Player, player2: Player) => {
   const reverse = Math.random() > 0.5;
   return {
-    reverse,
     randomPlayers: reverse ? [player2, player1] : [player1, player2],
   };
 };
 
 // FIX: don't render app/board until we have selected players for the first time so we don't have to create a fake game?
-let game = new Game(
-  new HumanPlayer('', 'X', player1Image),
-  new HumanPlayer('', 'O', player2Image)
-);
+let game = new Game(new HumanPlayer('', 'X'), new HumanPlayer('', 'O'));
 
 function App() {
+  const [signedIn1, setSignedIn1] = useState<SignedInPlayer | null>(null);
+  const [signedIn2, setSignedIn2] = useState<SignedInPlayer | null>(null);
   const [showPopup, setShowPopup] = useState(true);
   const [grid, setGrid] = useState(game.getGrid());
   const [message, setMessage] = useState('Welcome!');
@@ -38,7 +33,6 @@ function App() {
 
   const [gameStarted, setGameStarted] = useState(false);
 
-  const [reversed, setReversed] = useState(false);
   const [currentMode, setCurrentMode] = useState<
     'PvP' | 'PvE Easy' | 'PvE Hard'
   >('PvP'); // Track game mode
@@ -97,20 +91,17 @@ function App() {
     game = new Game(game.players[1], game.players[0]);
     setShowModal(false);
     setScoreUpdated(false); // Set the scoreUpdated state
-    setReversed((reversed) => !reversed);
     setGrid([...game.getGrid()]);
     nextTurn();
   };
 
   // TODO: send player names as props when called from reset game model and only create new player if name changes
   function handleGameModeSubmit(player1: Player, player2: Player) {
-    player1.image = player1.image || player1Image;
-    player2.image = player2.image || player2Image;
+    if (player1 instanceof SignedInPlayer) setSignedIn1(player1);
+    if (player2 instanceof SignedInPlayer) setSignedIn2(player2);
 
-    const { reverse, randomPlayers } = randomPlayer(player1, player2);
+    const { randomPlayers } = randomPlayer(player1, player2);
     game = new Game(randomPlayers[0], randomPlayers[1]);
-
-    setReversed(reverse);
 
     // if (reverse) setReversed((reversed) => !reversed);
 
@@ -147,13 +138,14 @@ function App() {
 
   return (
     <main className="flex flex-col gap-2 md:gap-6">
-      <Header
-        reversed={reversed}
-        playerNames={game.players.map(({ name }) => name)}
-      />
+      <Header players={game.players} />
       {/* {showPopup && <GameModePopup onSubmit={handleGameModeSubmit} />} */}
       <Modal isOpen={showPopup}>
-        <GameMode onSubmit={handleGameModeSubmit} />
+        <GameMode
+          onSubmit={handleGameModeSubmit}
+          signedIn1={signedIn1}
+          signedIn2={signedIn2}
+        />
       </Modal>
 
       <GameStatus
