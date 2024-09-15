@@ -31,7 +31,6 @@ const BoardComponent: React.FC<BoardComponentProps> = ({
     );
     // Uppdatera `animatedCells` med den nya 2D-arrayen som innehåller vilka celler som ska animeras
     setAnimatedCells(newAnimatedCells);
-    console.log('animatedCells', animatedCells);
   }, [grid]); // Kör denna effekt varje gång `grid` ändras
 
   const isWinningCell = (rowIndex: number, colIndex: number) => {

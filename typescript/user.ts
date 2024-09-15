@@ -42,13 +42,11 @@ try {
   console.error('Unable to connect to the database:', error);
 }
 
+// sign in
 userRouter.post('/', async (req, res) => {
-  // sign in
   const { username, password } = req.body;
-  console.log({ username, password });
-
   const user = await User.findOne({ where: { username } });
-  console.log(user);
+
   if (!user || user.password !== getHash(password)) {
     return res.json({ msg: 'Wrong username or password' });
   }
@@ -56,25 +54,24 @@ userRouter.post('/', async (req, res) => {
   return res.json({ imageUrl: user.image, name: user.username });
 });
 
+// sign up
 userRouter.put('/', async (req, res) => {
-  // sign up
   const { username, password } = req.body;
 
   try {
-    const imageUrl = path.join(__dirname, 'images', `${username}.jpg`);
+    const image = `/backend/images/${username}.jpg`;
 
-    const newUser = await User.create({
+    await User.create({
       username,
       password: getHash(password),
-      image: imageUrl,
+      image: image,
     });
-    console.log(newUser);
 
     createIfNotExists(`${username}.jpg`);
 
     return res.status(201).json();
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     if (error.name === 'SequelizeUniqueConstraintError') {
       return res.json({ msg: 'User already exists' });
     }
@@ -84,10 +81,9 @@ userRouter.put('/', async (req, res) => {
   }
 });
 
+// post image
 userRouter.put('/image', (req, res) => {
-  // post image
   const { username, image } = req.body;
-  console.log({ image });
   const binaryBuffer = Buffer.from(image.split('base64,')[1], 'base64');
   const imageUrl = path.join(__dirname, 'images', `${username}.jpg`);
 
@@ -97,8 +93,6 @@ userRouter.put('/image', (req, res) => {
     }
     return res.json({ msg: 'Image uploaded successfully' });
   });
-
-  res.json();
 });
 
 export default userRouter;

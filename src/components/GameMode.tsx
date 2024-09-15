@@ -129,18 +129,20 @@ const GameMode = ({
     reader.onloadend = async () => {
       const base64Image = reader.result;
       if (typeof base64Image === 'string') {
-        const response = await fetch('/api/uploadImage', {
-          method: 'POST',
+        const response = await fetch('/api/user/image', {
+          method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ player, encodedImage: base64Image }),
+          body: JSON.stringify({
+            // can only call method when signed in
+            username: player === 1 ? signedIn1?.name : signedIn2?.name,
+            image: base64Image,
+          }),
         });
 
         if (response.ok) {
-          // NOTE: in the future we can attach image to a specific player
-          const data = await response.json();
-          console.log('Image uploaded successfully:', data);
+          await response.json();
         } else {
           console.error('Image upload failed');
         }
