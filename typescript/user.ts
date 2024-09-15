@@ -39,19 +39,6 @@ try {
   console.error('Unable to connect to the database:', error);
 }
 
-try {
-  const newUser = await User.create({
-    username: 'Test',
-    password: '1234',
-    name: 'Tset',
-  });
-  console.log('created new user', newUser);
-} catch (error) {
-  if (error.name === 'SequelizeUniqueConstraintError') {
-    console.log('username already in use');
-  }
-}
-
 userRouter.put('/', async (req, res) => {
   // sign in
   const { username, password } = req.body;
@@ -66,12 +53,30 @@ userRouter.put('/', async (req, res) => {
   return res.json({ imageUrl: user.image, name: user.name });
 });
 
-userRouter.post('/', (req, res) => {
+userRouter.post('/', async (req, res) => {
   // sign up
   const { name, username, password } = req.body;
   console.log({ name, username, password });
 
-  res.json();
+  try {
+    const newUser = await User.create({
+      username,
+      password: getHash(password),
+      name,
+    });
+    console.log(newUser);
+
+    return res
+      .status(201)
+      .json({ name: newUser.name, imageUrl: newUser.image });
+  } catch (error) {
+    if (error.name === 'SequelizeUniqueConstraintError') {
+      return res.json({ msg: 'User already exists' });
+    }
+    return res
+      .status(500)
+      .json({ msg: 'Something went wront, please try again' });
+  }
 });
 
 userRouter.delete('/', (_req, res) => {
