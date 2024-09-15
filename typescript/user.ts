@@ -79,12 +79,6 @@ userRouter.post('/', async (req, res) => {
   }
 });
 
-userRouter.delete('/', (_req, res) => {
-  // sign out
-
-  res.json();
-});
-
 userRouter.put('/image', (req, res) => {
   // post image
   const { image } = req.body;

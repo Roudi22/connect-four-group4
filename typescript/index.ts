@@ -2,23 +2,11 @@ import express from 'express';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { createIfNotExists } from 'utils.js';
 import userRouter from './user.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-const createIfNotExists = (filename: string) => {
-  const fullDirPath = path.join(__dirname, 'images');
-  if (!fs.existsSync(fullDirPath)) {
-    fs.mkdirSync(path.join(fullDirPath));
-  }
-
-  const defaultPath = path.join(__dirname, 'images', 'default.jpg');
-  const fullPath = path.join(__dirname, 'images', filename);
-  if (!fs.existsSync(fullPath)) {
-    fs.copyFileSync(defaultPath, fullPath);
-  }
-};
 
 createIfNotExists('player1.jpg');
 createIfNotExists('player2.jpg');
