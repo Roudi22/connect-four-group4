@@ -1,5 +1,6 @@
 import express from 'express';
-import { DataTypes, Sequelize } from 'sequelize';
+import { DataTypes, Model, Sequelize } from 'sequelize';
+import { getHash } from 'utils';
 const userRouter = express.Router();
 
 const sequelize = new Sequelize({
@@ -7,18 +8,28 @@ const sequelize = new Sequelize({
   storage: './backend/db.sqlite',
 });
 
-const User = sequelize.define('User', {
-  username: {
-    type: DataTypes.STRING,
-    unique: true,
+class User extends Model {
+  declare username: string;
+  declare password: string;
+  declare name: string;
+  declare image: string;
+}
+
+User.init(
+  {
+    username: {
+      type: DataTypes.STRING,
+      unique: true,
+    },
+    password: DataTypes.STRING,
+    name: DataTypes.STRING,
+    image: {
+      type: DataTypes.STRING,
+      defaultValue: '',
+    },
   },
-  password: DataTypes.STRING,
-  name: DataTypes.STRING,
-  image: {
-    type: DataTypes.STRING,
-    defaultValue: '',
-  },
-});
+  { sequelize, modelName: 'User' }
+);
 
 try {
   await sequelize.authenticate();
@@ -41,12 +52,18 @@ try {
   }
 }
 
-userRouter.put('/', (req, res) => {
+userRouter.put('/', async (req, res) => {
   // sign in
   const { username, password } = req.body;
   console.log({ username, password });
 
-  res.json({ imageUrl: '', name: '' });
+  const user = await User.findOne({ where: { username } });
+  console.log(user);
+  if (!user || user.password !== getHash(password)) {
+    return res.json({ msg: 'Wrong username or password' });
+  }
+
+  return res.json({ imageUrl: user.image, name: user.name });
 });
 
 userRouter.post('/', (req, res) => {
