@@ -126,6 +126,11 @@ function App() {
     else setSignedIn2(null);
   };
 
+  const handleSignIn = (playerNum: 1 | 2, player: SignedInPlayer) => {
+    if (playerNum === 1) setSignedIn1(player);
+    else setSignedIn2(player);
+  };
+
   const returnToMenu = () => {
     setShowPopup(true);
     setShowModal(false);
@@ -149,6 +154,7 @@ function App() {
         <GameMode
           onSubmit={handleGameModeSubmit}
           signOut={handleSignOut}
+          signIn={handleSignIn}
           signedIn1={signedIn1}
           signedIn2={signedIn2}
         />

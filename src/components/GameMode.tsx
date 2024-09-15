@@ -5,6 +5,7 @@ import { HumanPlayer, Player, SignedInPlayer } from '../classes/Player';
 type GameModeProps = {
   onSubmit: (player1: Player, player2: Player) => void;
   signOut: (player: 1 | 2) => void;
+  signIn: (playerNum: 1 | 2, player: SignedInPlayer) => void;
   signedIn1: SignedInPlayer | null;
   signedIn2: SignedInPlayer | null;
 };
@@ -22,6 +23,7 @@ const maxNameLength = 20;
 const GameMode = ({
   onSubmit,
   signOut,
+  signIn,
   signedIn1,
   signedIn2,
 }: GameModeProps) => {
@@ -31,17 +33,66 @@ const GameMode = ({
   const [player2Difficulty, setPlayer2Difficulty] = useState(1);
   const [player1Name, setPlayer1Name] = useState<string>(signedIn1?.name || '');
   const [player2Name, setPlayer2Name] = useState<string>(signedIn2?.name || '');
+  const [signInName, setSignInName] = useState('');
+  const [password, setPassword] = useState('');
 
   function goToSignInForPlayer(player: 1 | 2) {
+    setSignInName(player === 1 ? player1Name : player2Name);
+    setPassword('');
     setSignInPlayer(player);
     setSelectedMode('Sign In');
   }
 
-  async function handleSignIn() {
-    console.log(signInPlayer);
+  function goToRegister() {
+    setSignInName('');
+    setPassword('');
+    setSelectedMode('Register');
   }
 
-  async function handleRegister() {}
+  async function handleSignIn(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const response = await fetch('/api/user', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ username: signInName, password }),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+
+      if (signInPlayer === 1)
+        signIn(1, new SignedInPlayer(data.name, 'X', data.imageUrl));
+      else signIn(2, new SignedInPlayer(data.name, 'O', data.imageUrl));
+
+      setSelectedMode('Human vs Human');
+    } else {
+      console.error('Sign In failed');
+      // FIX: Give better feedback to user
+      setSignInName('Sign In failed');
+    }
+  }
+
+  async function handleRegister(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const response = await fetch('/api/user', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ username: signInName, password }),
+    });
+
+    if (response.ok) {
+      // FIX: Give better feedback to user
+      setSignInName('Registration Successful!');
+    } else {
+      console.error('Registration failed');
+      // FIX: Give better feedback to user
+      setSignInName('Registration failed');
+    }
+  }
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -230,7 +281,7 @@ const GameMode = ({
             name="gameMode"
             value="Register"
             checked={selectedMode === 'Register'}
-            onChange={(e) => setSelectedMode(e.target.value as GameMode)}
+            onChange={goToRegister}
             className="hidden"
           />
           <label
@@ -343,7 +394,7 @@ const GameMode = ({
           }`}
         >
           {selectedMode === 'Human vs AI' && (
-            <div className="rounded-s-md p-1 md:p-8 flex flex-col gap-2 items-center justify-center">
+            <div className="rounded-s-md p-1 md:p-8 flex flex-col gap-2">
               <input
                 type="text"
                 className="border p-2 rounded-md outline-none w-full"
@@ -381,7 +432,7 @@ const GameMode = ({
                   Sign In
                 </button>
               )}
-              <div className="flex gap-2">{renderAIOptions(2)}</div>
+              <div className="flex self-center gap-2">{renderAIOptions(2)}</div>
             </div>
           )}
         </div>
@@ -427,11 +478,26 @@ const GameMode = ({
           {selectedMode === 'Sign In' && (
             <form
               onSubmit={handleSignIn}
-              className="rounded-s-md p-1 md:p-8 flex flex-col items-center gap-4"
+              className="rounded-s-md p-1 md:p-8 flex flex-col gap-4"
             >
-              <div className="flex gap-2 items-center rounded-s-md p-1">
-                Sign In
-              </div>
+              <input
+                type="text"
+                placeholder="Name"
+                maxLength={maxNameLength}
+                value={signInName}
+                required
+                onChange={(e) => setSignInName(e.target.value)}
+                className="border p-2 rounded-md outline-none"
+              />
+              <input
+                type="password"
+                placeholder="Password"
+                value={password}
+                autoComplete="off"
+                required
+                onChange={(e) => setPassword(e.target.value)}
+                className="border p-2 rounded-md outline-none"
+              />
               <div className="flex space-x-4">
                 <button
                   type="submit"
@@ -453,11 +519,28 @@ const GameMode = ({
           {selectedMode === 'Register' && (
             <form
               onSubmit={handleRegister}
-              className="rounded-s-md p-1 md:p-8 flex flex-col items-center gap-4"
+              className="rounded-s-md p-1 md:p-8 flex flex-col gap-4"
             >
-              <div className="flex gap-2 items-center rounded-s-md p-1">
-                Register
-              </div>
+              <input
+                type="text"
+                placeholder="Name"
+                minLength={minNameLength}
+                maxLength={maxNameLength}
+                value={signInName}
+                required
+                onChange={(e) => setSignInName(e.target.value)}
+                className="border p-2 rounded-md outline-none"
+              />
+              <input
+                type="password"
+                placeholder="Password"
+                minLength={5}
+                value={password}
+                autoComplete="off"
+                required
+                onChange={(e) => setPassword(e.target.value)}
+                className="border p-2 rounded-md outline-none"
+              />
               <div className="flex space-x-4">
                 <button
                   type="submit"

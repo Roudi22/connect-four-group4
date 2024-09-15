@@ -2,8 +2,12 @@ import express from 'express';
 import fs from 'fs';
 import path from 'path';
 import { DataTypes, Model, Sequelize } from 'sequelize';
+import { fileURLToPath } from 'url';
 import { createIfNotExists, getHash } from './utils.js';
 const userRouter = express.Router();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const sequelize = new Sequelize({
   dialect: 'sqlite',
@@ -38,7 +42,7 @@ try {
   console.error('Unable to connect to the database:', error);
 }
 
-userRouter.put('/', async (req, res) => {
+userRouter.post('/', async (req, res) => {
   // sign in
   const { username, password } = req.body;
   console.log({ username, password });
@@ -52,10 +56,9 @@ userRouter.put('/', async (req, res) => {
   return res.json({ imageUrl: user.image, name: user.username });
 });
 
-userRouter.post('/', async (req, res) => {
+userRouter.put('/', async (req, res) => {
   // sign up
   const { username, password } = req.body;
-  console.log({ username, password });
 
   try {
     const imageUrl = path.join(__dirname, 'images', `${username}.jpg`);
@@ -69,10 +72,9 @@ userRouter.post('/', async (req, res) => {
 
     createIfNotExists(`${username}.jpg`);
 
-    return res
-      .status(201)
-      .json({ name: newUser.username, imageUrl: newUser.image });
+    return res.status(201).json();
   } catch (error) {
+    console.log(error);
     if (error.name === 'SequelizeUniqueConstraintError') {
       return res.json({ msg: 'User already exists' });
     }
