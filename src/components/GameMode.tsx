@@ -17,6 +17,7 @@ type GameMode =
   | 'Register';
 
 const minNameLength = 3;
+const maxNameLength = 20;
 
 const GameMode = ({
   onSubmit,
@@ -261,6 +262,7 @@ const GameMode = ({
                 type="text"
                 placeholder="Player 1 Name"
                 minLength={minNameLength}
+                maxLength={maxNameLength}
                 value={player1Name}
                 disabled={signedIn1 !== null}
                 required
@@ -297,6 +299,7 @@ const GameMode = ({
                 type="text"
                 placeholder="Player 2 Name"
                 minLength={minNameLength}
+                maxLength={maxNameLength}
                 value={player2Name}
                 required
                 disabled={signedIn2 !== null}
@@ -346,6 +349,7 @@ const GameMode = ({
                 className="border p-2 rounded-md outline-none w-full"
                 placeholder="Enter Player Name"
                 minLength={minNameLength}
+                maxLength={maxNameLength}
                 value={player1Name}
                 required
                 disabled={signedIn1 !== null}
