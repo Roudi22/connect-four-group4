@@ -121,6 +121,11 @@ function App() {
     nextTurn();
   }
 
+  const handleSignOut = (player: 1 | 2) => {
+    if (player === 1) setSignedIn1(null);
+    else setSignedIn2(null);
+  };
+
   const returnToMenu = () => {
     setShowPopup(true);
     setShowModal(false);
@@ -143,6 +148,7 @@ function App() {
       <Modal isOpen={showPopup}>
         <GameMode
           onSubmit={handleGameModeSubmit}
+          signOut={handleSignOut}
           signedIn1={signedIn1}
           signedIn2={signedIn2}
         />
