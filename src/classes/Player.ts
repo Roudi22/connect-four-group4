@@ -9,16 +9,18 @@ export type Player = HumanPlayer | AIPlayer;
 export abstract class PlayerBaseClass {
   public name: string;
   public symbol: PlayerSymbol;
+  public image?: string;
 
-  constructor(name: string, symbol: PlayerSymbol) {
+  constructor(name: string, symbol: PlayerSymbol, image?: string) {
     this.name = name;
     this.symbol = symbol;
+    this.image = image;
   }
 }
 
 export class HumanPlayer extends PlayerBaseClass {
-  constructor(name: string, symbol: PlayerSymbol) {
-    super(name, symbol);
+  constructor(name: string, symbol: PlayerSymbol, image?: string) {
+    super(name, symbol, image);
   }
 
   public playTurn(board: Board, col: number) {

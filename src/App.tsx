@@ -9,6 +9,10 @@ import Header from './components/Header';
 import Scoreboard from './components/Scoreboard';
 import Modal from './components/ui/Modal';
 import { wait } from './utils/time';
+import { truncateString } from './utils/functions';
+
+import player1Image from '../backend/images/player1.jpg';
+import player2Image from '../backend/images/player2.jpg';
 
 const randomPlayer = (player1: Player, player2: Player) => {
   const reverse = Math.random() > 0.5;
@@ -19,15 +23,20 @@ const randomPlayer = (player1: Player, player2: Player) => {
 };
 
 // FIX: don't render app/board until we have selected players for the first time so we don't have to create a fake game?
-let game = new Game(new HumanPlayer('', 'X'), new HumanPlayer('', 'O'));
+let game = new Game(
+  new HumanPlayer('', 'X', player1Image),
+  new HumanPlayer('', 'O', player2Image)
+);
 
 function App() {
   const [showPopup, setShowPopup] = useState(true);
   const [grid, setGrid] = useState(game.getGrid());
   const [message, setMessage] = useState('Welcome!');
-  const [modalMessage, setModalMessage] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [scoreUpdated, setScoreUpdated] = useState(false); // State to track score updates
+  const [currentPlayer, setCurrentPlayer] = useState(game.getCurrentPlayer());
+
+  const [gameStarted, setGameStarted] = useState(false);
 
   const [reversed, setReversed] = useState(false);
   const [currentMode, setCurrentMode] = useState<
@@ -37,10 +46,11 @@ function App() {
   const updateUi = () => {
     setMessage(
       game.winner
-        ? `${game.winner.name} wins!`
-        : `${game.getCurrentPlayer().name}'s turn`
+        ? `${truncateString(game.winner.name, 12)} wins!`
+        : `${truncateString(game.getCurrentPlayer().name, 12)}'s turn`
     );
     setGrid([...game.getGrid()]);
+    setCurrentPlayer(game.getCurrentPlayer());
     if (game.winner) {
       setScoreUpdated(true); // Trigger scoreboard refresh
       setTimeout(() => {
@@ -60,7 +70,7 @@ function App() {
 
     const currentPlayer = game.getCurrentPlayer();
     if (gameOver || currentPlayer instanceof HumanPlayer) return;
-    playAITurn(currentPlayer);
+    playAITurn(game.getCurrentPlayer() as AIPlayer);
   };
 
   const playAITurn = async (player: AIPlayer) => {
@@ -86,17 +96,23 @@ function App() {
     // NOTE: reverse players to change who goes first. Also affects GameStatus, is this wanted behaviour?
     game = new Game(game.players[1], game.players[0]);
     setShowModal(false);
-    setModalMessage('');
     setScoreUpdated(false); // Set the scoreUpdated state
     setReversed((reversed) => !reversed);
+    setGrid([...game.getGrid()]);
     nextTurn();
   };
 
   // TODO: send player names as props when called from reset game model and only create new player if name changes
   function handleGameModeSubmit(player1: Player, player2: Player) {
+    player1.image = player1.image || player1Image;
+    player2.image = player2.image || player2Image;
+
     const { reverse, randomPlayers } = randomPlayer(player1, player2);
     game = new Game(randomPlayers[0], randomPlayers[1]);
-    if (reverse) setReversed((reversed) => !reversed);
+
+    setReversed(reverse);
+
+    // if (reverse) setReversed((reversed) => !reversed);
 
     // Determine if it is PvP or PvE game based on players, used for scoreboard auto-select
     if (player1 instanceof HumanPlayer && player2 instanceof HumanPlayer) {
@@ -110,6 +126,7 @@ function App() {
       setCurrentMode('PvE Hard');
     }
     setShowPopup(false);
+    setGameStarted(true);
     nextTurn();
   }
 
@@ -117,8 +134,8 @@ function App() {
     setShowPopup(true);
     setShowModal(false);
     setMessage('Welcome');
-    setModalMessage('');
     setScoreUpdated(false);
+    setGameStarted(false);
     setGrid(game.getGrid());
   };
 
@@ -139,20 +156,19 @@ function App() {
         <GameMode onSubmit={handleGameModeSubmit} />
       </Modal>
 
-      <GameStatus message={message} />
+      <GameStatus
+        message={message}
+        currentPlayer={currentPlayer}
+        gameStarted={gameStarted}
+      />
       <BoardComponent
         grid={grid}
         onCellClick={handleCellClick}
         winningConnection={game.winningConnection}
       />
-      <Scoreboard
-        scoreUpdated={scoreUpdated}
-        gameMode={currentMode}
-        onResetScoreboard={setModalMessage}
-      />
+      <Scoreboard scoreUpdated={scoreUpdated} gameMode={currentMode} />
       <Modal isOpen={showModal} onClose={handleCloseModal}>
         <div className="flex flex-col gap-4">
-          {modalMessage}
           {isTie ? (
             <span className="text-xl text-center font-bold">It's a tie!</span>
           ) : (
